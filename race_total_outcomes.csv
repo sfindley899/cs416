@@ -1,0 +1,8 @@
+Data as of,Start Date,End Date,State,Race/Hispanic origin,Count of COVID-19 deaths,Distribution of COVID-19 deaths (%),Unweighted distribution of population (%),Weighted distribution of population (%),Difference between COVID-19 and unweighted population %,Difference between COVID-19 and weighted population %,AgeGroup
+9/27/2023,1/1/2020,9/23/2023,United States,Hispanic,12890.3,26.9,19.6,34.1,7.3,-7.2,"All ages, standardized"
+9/27/2023,1/1/2020,9/23/2023,United States,Non-Hispanic American Indian or Alaska Native,968.1,2.1,0.7,0.4,1.4,1.7,"All ages, standardized"
+9/27/2023,1/1/2020,9/23/2023,United States,Non-Hispanic Asian,2033.3,3.1,6,9.6,-2.9,-6.5,"All ages, standardized"
+9/27/2023,1/1/2020,9/23/2023,United States,Non-Hispanic Black,11061.2,21.5,12.8,13.5,8.7,8,"All ages, standardized"
+9/27/2023,1/1/2020,9/23/2023,United States,Non-Hispanic Native Hawaiian or Other Pacific Islander,212.8,0.6,0.2,0.2,0.4,0.4,"All ages, standardized"
+9/27/2023,1/1/2020,9/23/2023,United States,Non-Hispanic White,39205.1,44.2,58.2,40,-14,4.2,"All ages, standardized"
+9/27/2023,1/1/2020,9/23/2023,United States,Other,545,1.5,2.4,2.3,-0.9,-0.8,"All ages, standardized"
