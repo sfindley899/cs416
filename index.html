@@ -80,65 +80,87 @@
 				<h3>Let’s explore the data to understand this impact better.</h3>
 		   </div>
         </div>
+        <div class="section" style="background-color: #6e6e6e;">
+            <div class="content-block">
+				<h1>Weekly Deaths and Cases</h1>
+            </div>
+        </div>
         <div class="section" style="background-color: #4e4e4e;">
             <div class="content-block">
-				<h1>History of the COVID-19 Pandemic - Timeline</h1>
-                <p>Graph that shows state map labeling each state, with special focus on Hawaii, Alaska, and smaller NE states.</p>
+				<h1>Cumulative Death Count</h1>
+                <h3>While the rate of COVID-19 deaths has slowed over time, the rising cumulative death count tells a different story.</h3>
+				<div id="gender-chart"></div>
+				<h3>The rising number of cases underscores the persistent spread of COVID-19, despite lower mortality rates.</h3>
+				<script>loadGenderD3Chart()</script>
             </div>
         </div>
         <div class="section" style="background-color: #3e3e3e;">
             <div class="content-block">
-				<h1>Current COVID-19 Hospitalization Trends</h1>
-                <p>Paragraph that shows current trends. Use d3 to put real numbers here so it's dynamic.</p>
-				<div id="gender-chart"></div>
-				<script>loadGenderD3Chart()</script>
+				<h3>This chart illustrates the trends in weekly COVID-19 cases from April 2020 to April 2023.</h3>
+				<div id="cases-chart"></div>
+				<script>loadCasesWeeklyD3Chart()</script>
+                <h3>Weekly trends in cases highlight critical periods and the effectiveness of public health measures, such as vaccines, mask mandates, and lockdowns.</h3>
 		   </div>
         </div>
         <div class="section" style="background-color: #5e5e5e;">
             <div class="content-block">
-				<h1>History of the COVID - Timeline</h1>
-                <p> 
-					A graphical summary of COVID-19 statistics by state, including infection rates and deaths
-				</p>
-				<div id="cases-chart"></div>
-				<script>loadCasesWeeklyD3Chart()</script>
-            </div>
+				<h3>
+				However, despite the rollout of vaccines, there were still periods with significant spikes in weekly deaths.
+				</h3>
+				<div id="deaths-chart"></div>
+				<h3>
+				<script>loadDeathsWeeklyD3Chart()</script>
+				During the peak of the Omicron variant, from January 30 to February 5, 2022, over 18,400 deaths were recorded in just one week.
+				</h3>
+			</div>
         </div>
         <div class="section" style="background-color: #6e6e6e;">
             <div class="content-block">
-                <p>Transition to COVID to the past or in perspective over the years.</p>
-				<div id="deaths-chart"></div>
-				<script>loadDeathsWeeklyD3Chart()</script>
+				<h1>Weekly Deaths and Cases by Region</h1>
             </div>
         </div>
         <div class="section" style="background-color: #7e7e7e;">
             <div class="content-block">
-                <p>This chart shows the overall trend of COVID-19 hospitalizations and deaths over time...</p>
+                <h3>Weekly Deaths and Cases in the Northeast.</h3>
+                <h3>The Northeast faced significant challenges at various points during the pandemic, reflecting its high population density and initial outbreak.</h3>
             </div>
         </div>
         <div class="section" style="background-color: #8e8e8e;">
             <div class="content-block">
-                <p>This would show the graph overview of total deaths side by side with cases with notable dates highlighted.</p>
+                <h3>Weekly Deaths and Cases in the West</h3>
+                <h3>The West experienced varying impacts, with some states hit harder due to different public health responses and population factors.</h3>
+            </div>
+        </div>
+        <div class="section" style="background-color: #8e8e8e;">
+            <div class="content-block">
+                <h3>Weekly Deaths and Cases in the Midwest</h3>
+                <h3>The Midwest saw significant surges in cases and deaths, especially during the later waves of the pandemic.</h3>
+            </div>
+        </div>
+		<div class="section" style="background-color: #8e8e8e;">
+            <div class="content-block">
+                <h3>Weekly Deaths and Cases in the South</h3>
+                <h3>The South faced severe impacts, with significant spikes in cases and deaths at various stages of the pandemic.</h3>
+            </div>
+        </div>
+        <div class="section" style="background-color: #6e6e6e;">
+            <div class="content-block">
+				<h1>Interactive Exploration</h1>
             </div>
         </div>
         <div class="section" style="background-color: #9e9e9e;">
             <div class="content-block">
-                <p>Now it’s your turn to explore. Use the filters to view data for specific time periods, regions, or demographic groups...</p>
-            </div>
-        </div>
-        <div class="section" style="background-color: #aeaeae;">
-            <div class="content-block">
-                <p>Graph that has an option to alternate between infections/deaths with count/percent. Also has a slider range to change range.</p>
+                <h3>Use this interactive slide to explore specific data points, trends, and regional impacts in more detail.</h3>
             </div>
         </div>
         <div class="section" style="background-color: #bebebe;">
             <div class="content-block">
-                <p>The COVID-19 pandemic has had a significant impact on global health...</p>
+                <h3>Understanding the pandemic's impact through data is crucial for preventing future outbreaks and improving global health responses.</h3>
             </div>
         </div>
         <div class="section" style="background-color: #cecece;">
             <div class="content-block">
-                <p>References.</p>
+                <h1>References:</h1>
             </div>
         </div>
     </div>
