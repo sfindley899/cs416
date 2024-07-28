@@ -12,6 +12,7 @@ var monthly_age_states_deaths_csv = "pages_states_monthly_dates.csv";
 var monthly_gender_dates_csv = "gender_monthly_dates.csv";
 var weekly_regional_cases_deaths_csv = "weekly_cases_and_deaths_per_state_region.csv";
 var cumulative_deaths_csv = "cumulative_deaths_us.csv";
+var weekly_deaths_csv = "data_table_for_weekly_deaths__the_united_states.csv";
 
 // Test
 function pageLoadTest()
@@ -39,6 +40,10 @@ async function initCovidAgeData() {
 
 async function initCovidGenderData() {
 	return d3.csv(monthly_gender_dates_csv);
+}
+
+async function initCovidWeeklyDeathData() {
+	return d3.csv(weekly_deaths_csv);
 }
 
 async function initCovidRegionalData() {
@@ -103,9 +108,9 @@ async function createGenderD3Chart() {
 }
 
 async function createDeathsWeeklyChart() {
-	const margin = { top: 30, right: 20, bottom: 70, left: 50 },
-		width = 400 - margin.left - margin.right,
-		height = 300 - margin.top - margin.bottom;
+	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
+		width = document.body.clientWidth - margin.left - margin.right,
+		height = 450 - margin.top - margin.bottom;
 
 	const parseDate = d3.timeParse("%m/%d/%Y");
 
@@ -113,20 +118,22 @@ async function createDeathsWeeklyChart() {
 	const y = d3.scaleLinear().range([height, 0]);
 
 	const svg = d3.select("#deaths-chart").append("svg")
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
+		.attr("width", '100%')
+		.attr("height", '100%')
+		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+		.attr("preserveAspectRatio", "xMidYMid meet")
 		.append("g")
 		.attr("transform",
 			"translate(" + margin.left + "," + margin.top + ")");
 
-	initCovidRegionalData().then(data => {
+	initCovidWeeklyDeathData().then(data => {
 		data.forEach(d => {
-			d.start_date = parseDate(d.start_date);
-			d.new_deaths = +d.new_deaths;
+			d.date = parseDate(d.date);
+			d.weekly_deaths = +d.weekly_deaths;
 		});
 
-		x.domain(d3.extent(data, d => d.start_date));
-		y.domain([0, d3.max(data, d => d.new_deaths)]);
+		x.domain(d3.extent(data, d => d.date));
+		y.domain([0, d3.max(data, d => d.weekly_deaths)]);
 
 		svg.append("g")
 			.attr("transform", "translate(0," + height + ")")
@@ -136,8 +143,8 @@ async function createDeathsWeeklyChart() {
 			.call(d3.axisLeft(y));
 
 		const line = d3.line()
-			.x(d => x(d.start_date))
-			.y(d => y(d.new_deaths));
+			.x(d => x(d.date))
+			.y(d => y(d.weekly_deaths));
 
 		svg.append("path")
 			.data([data])
@@ -150,9 +157,10 @@ async function createDeathsWeeklyChart() {
 }
 
 async function createCasesWeeklyChart() {
-	const margin = { top: 30, right: 20, bottom: 70, left: 50 },
-		width = 400 - margin.left - margin.right,
-		height = 300 - margin.top - margin.bottom;
+	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
+		width = document.body.clientWidth - margin.left - margin.right,
+		height = 450 - margin.top - margin.bottom;
+
 
 	const parseDate = d3.timeParse("%m/%d/%Y");
 
@@ -160,8 +168,10 @@ async function createCasesWeeklyChart() {
 	const y = d3.scaleLinear().range([height, 0]);
 
 	const svg = d3.select("#cases-chart").append("svg")
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
+		.attr("width", '100%')
+		.attr("height", '100%')
+		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+		.attr("preserveAspectRatio", "xMidYMid meet")
 		.append("g")
 		.attr("transform",
 			"translate(" + margin.left + "," + margin.top + ")");
@@ -199,7 +209,7 @@ async function createCasesWeeklyChart() {
 async function createCumulativeDeathsChart() {
 	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
 		width = document.body.clientWidth - margin.left - margin.right,
-		height = 500 - margin.top - margin.bottom;
+		height = 450 - margin.top - margin.bottom;
 
 	const parseDate = d3.timeParse("%m/%d/%Y");
 
