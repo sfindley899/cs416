@@ -33,10 +33,22 @@
         h1 {
             margin-top: 20px;
             margin-bottom: 20px;
-            font-size: 2em;
+            font-size: 3em;
             color: #d3d3d3;
         }
-
+        h3 {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-size: 1.75em;
+            color: #d3d3d3;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
         .content-block {
             background-color: #3e3e3e;
             padding: 20px;
@@ -50,14 +62,28 @@
 <body onload="pageLoadTest()">
     <div id="container">
         <div class="section" style="background-color: #2e2e2e;">
-            <h1>COVID-19 at a glance</h1>
+            <h1>COVID-19’s Death Toll on the US: A Data-Driven Analysis</h1>
             <div class="content-block">
-                <p>
-					In a world gripped by the COVID-19 pandemic, understanding the data is more crucial than ever. We provide an interactive feature that presenting COVID-19 hospitalization data. You’ll find charts for different stages of the pandemic, showing the number of deaths and cases over time. 
-				</p>
-				<p>
-					Accompanying text provides context for the data, highlighting key events and measures taken. This tool offers a clear view of the pandemic’s impact on our healthcare systems.
-				</p>
+                <h3>
+					COVID-19 has devastated lives across America.
+				</h3>
+				<h3>
+					Although the US public emergency ended on May 11, 2023, this presentation explores its lasting impact within the country.
+				</h3>
+				<h3><strong>Scroll down to explore the data and insights further.</strong></h3>
+            </div>
+        </div>
+        <div class="section" style="background-color: #3e3e3e;">
+            <div class="content-block">
+                <h3>Imagine a city with the population of San Francisco suddenly disappearing.</h3>
+				<h3>This number is approximately the amount of lives lost to COVID-19 from March 2020 to May 2023.</h3>
+				<h3>Let’s explore the data to understand this impact better.</h3>
+		   </div>
+        </div>
+        <div class="section" style="background-color: #4e4e4e;">
+            <div class="content-block">
+				<h1>History of the COVID-19 Pandemic - Timeline</h1>
+                <p>Graph that shows state map labeling each state, with special focus on Hawaii, Alaska, and smaller NE states.</p>
             </div>
         </div>
         <div class="section" style="background-color: #3e3e3e;">
@@ -68,23 +94,21 @@
 				<script>loadGenderD3Chart()</script>
 		   </div>
         </div>
-        <div class="section" style="background-color: #4e4e4e;">
-            <div class="content-block">
-				<h1>History of the COVID-19 Pandemic - Timeline</h1>
-                <p>Graph that shows state map labeling each state, with special focus on Hawaii, Alaska, and smaller NE states.</p>
-            </div>
-        </div>
         <div class="section" style="background-color: #5e5e5e;">
             <div class="content-block">
 				<h1>History of the COVID - Timeline</h1>
                 <p> 
 					A graphical summary of COVID-19 statistics by state, including infection rates and deaths
 				</p>
+				<div id="cases-chart"></div>
+				<script>loadCasesWeeklyD3Chart()</script>
             </div>
         </div>
         <div class="section" style="background-color: #6e6e6e;">
             <div class="content-block">
                 <p>Transition to COVID to the past or in perspective over the years.</p>
+				<div id="deaths-chart"></div>
+				<script>loadDeathsWeeklyD3Chart()</script>
             </div>
         </div>
         <div class="section" style="background-color: #7e7e7e;">
