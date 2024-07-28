@@ -24,10 +24,21 @@
             scroll-snap-align: start;
         }
 
+        .chart {
+            width: 100%;
+            max-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         #container {
             scroll-snap-type: y mandatory;
             overflow-y: scroll;
             height: 100vh;
+        }
+        svg {
+            width: 100%;
+            height: 100%;
         }
 
         h1 {
@@ -56,13 +67,14 @@
             width: 80%;
             border-radius: 8px;
             color: #d3d3d3;
+			max-height: 80vh;
         }
 	
         .image-container img {
             max-width: 100%;
             height: auto;
             width: auto;
-            max-height: 45vh;
+            max-height: 40vh;
         }
     </style>
 </head>
@@ -82,7 +94,7 @@
         </div>
         <div class="section" style="background-color: #3e3e3e;">
             <div class="content-block">
-                <h3>Imagine a city with the population of San Francisco suddenly disappearing.</h3>
+                <h3>Imagine 800,000 people, the population with the city San Francisco suddenly disappearing.</h3>
 				<div class="image-container">
 					<img src="golden_gate.jpg" alt="Golden Gate Bridge">
 				</div>
@@ -92,16 +104,21 @@
         </div>
         <div class="section" style="background-color: #6e6e6e;">
             <div class="content-block">
-				<h1>Weekly Deaths and Cases</h1>
+				<h1>Cumulative Death Count</h1>
             </div>
         </div>
+
         <div class="section" style="background-color: #4e4e4e;">
             <div class="content-block">
-				<h1>Cumulative Death Count</h1>
                 <h3>While the rate of COVID-19 deaths has slowed over time, the rising cumulative death count tells a different story.</h3>
-				<div id="total-deaths-chart"></div>
-				<h3>The rising number of cases underscores the persistent spread of COVID-19, despite lower mortality rates.</h3>
+				<div class="chart" id="total-deaths-chart"></div>
+				<h3>The rising number of cases underscores the persistent spread of COVID-19, despite decreasing mortality rates over time.</h3>
 				<script>totalDeathsD3Chart()</script>
+            </div>
+        </div>
+        <div class="section" style="background-color: #6e6e6e;">
+            <div class="content-block">
+				<h1>Weekly Deaths and Cases</h1>
             </div>
         </div>
         <div class="section" style="background-color: #3e3e3e;">

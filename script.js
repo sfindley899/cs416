@@ -19,6 +19,12 @@ function pageLoadTest()
 	alert("Page has been loaded!");
 }
 
+function getDateValue(dateString)
+{
+	var dateParse = d3.timeParse("%m/%d/%Y");
+	return dateParse(dateString);
+}
+
 async function initCovidDemographicData() {
 	return d3.csv(demographics_summary_csv);
 }
@@ -191,7 +197,7 @@ async function createCasesWeeklyChart() {
 }
 
 async function createCumulativeDeathsChart() {
-	const margin = { top: 30, right: 20, bottom: 70, left: 50 },
+	const margin = { top: 30, right: 50, bottom: 70, left: 50 },
 		width = document.body.clientWidth - margin.left - margin.right,
 		height = 500 - margin.top - margin.bottom;
 
@@ -201,8 +207,10 @@ async function createCumulativeDeathsChart() {
 	const y = d3.scaleLinear().range([height, 0]);
 
 	const svg = d3.select("#total-deaths-chart").append("svg")
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
+		.attr("width", '100%')
+		.attr("height", '100%')
+		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+		.attr("preserveAspectRatio", "xMidYMid meet")
 		.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -234,13 +242,15 @@ async function createCumulativeDeathsChart() {
 			.style("stroke", "steelblue")
 			.style("stroke-width", "2px");
 
+	
+
 		// Adding annotations
 		const annotations = [
-			{date: "1/11/2020", value: 1, text: "First Death"},
-			{date: "1/25/2020", value: 6, text: "6 Deaths"},
-			{date: "2/8/2020", value: 10, text: "10 Deaths"},
-			{date: "2/15/2020", value: 16, text: "16 Deaths"},
-			{date: "2/22/2020", value: 22, text: "22 Deaths"}
+			{date: "1/11/2020", value: getDateValue("1/11/2020"), text: "First Death"},
+			{date: "1/25/2020", value: getDateValue("1/25/2020"), text: "6 Deaths"},
+			{date: "2/8/2020", value: getDateValue("2/8/2020"), text: "10 Deaths"},
+			{date: "2/15/2020", value: getDateValue("2/15/2020"), text: "16 Deaths"},
+			{date: "2/15/2020", value: getDateValue("2/15/2020"), text: "22 Deaths"}
 		];
 
 		annotations.forEach(ann => {
