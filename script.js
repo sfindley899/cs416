@@ -176,14 +176,21 @@ async function createCasesWeeklyChart() {
 		.attr("transform",
 			"translate(" + margin.left + "," + margin.top + ")");
 
-	initCovidRegionalData().then(data => {
+     initCovidRegionalData().then(data => {
 		data.forEach(d => {
 			d.date_updated = parseDate(d.date_updated);
 			d.new_cases = +d.new_cases;
 		});
 
-		x.domain(d3.extent(data, d => d.date_updated));
-		y.domain([0, d3.max(data, d => d.new_cases)]);
+		// Aggregate data by date
+		const aggregatedData = d3.nest()
+			.key(d => d.date_updated)
+			.rollup(v => d3.sum(v, d => d.new_cases))
+			.entries(data)
+			.map(d => ({ date: new Date(d.key), value: d.value }));
+
+		x.domain(d3.extent(aggregatedData, d => d.date));
+		y.domain([0, d3.max(aggregatedData, d => d.value)]);
 
 		svg.append("g")
 			.attr("transform", "translate(0," + height + ")")
@@ -192,17 +199,51 @@ async function createCasesWeeklyChart() {
 		svg.append("g")
 			.call(d3.axisLeft(y));
 
-		const line = d3.line()
-			.x(d => x(d.date_updated))
-			.y(d => y(d.new_cases));
+		// X Axis label
+		svg.append("text")
+			.attr("text-anchor", "end")
+			.attr("x", width / 2 + margin.left)
+			.attr("y", height + margin.top + 40)
+			.text("Date");
+
+		// Y Axis label
+		svg.append("text")
+			.attr("text-anchor", "end")
+			.attr("transform", "rotate(-90)")
+			.attr("y", -margin.left + 20)
+			.attr("x", -height / 2 + margin.top)
+			.text("New Cases");
+
+		const area = d3.area()
+			.x(d => x(d.date))
+			.y0(height)
+			.y1(d => y(d.value));
 
 		svg.append("path")
-			.data([data])
+			.datum(aggregatedData)
+			.attr("class", "area")
+			.attr("d", area);
+
+		const line = d3.line()
+			.x(d => x(d.date))
+			.y(d => y(d.value));
+
+		svg.append("path")
+			.datum(aggregatedData)
 			.attr("class", "line")
-			.attr("d", line)
-			.style("fill", "none")
-			.style("stroke", "steelblue")
-			.style("stroke-width", "2px");
+			.attr("d", line);
+
+		// Adding annotations using d3-annotation library
+		const annotations = [
+			{ note: { label: "Significant Drop", bgPadding: 5 }, x: x(parseDate("1/11/2020")), y: y(100000), dy: -30, dx: 0 },
+			{ note: { label: "Peak", bgPadding: 5 }, x: x(parseDate("1/25/2022")), y: y(700000), dy: -30, dx: 0 },
+		];
+
+		const makeAnnotations = d3.annotation()
+			.annotations(annotations);
+
+		svg.append("g")
+			.call(makeAnnotations);
 	});
 }
 
