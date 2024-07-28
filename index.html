@@ -57,6 +57,13 @@
             border-radius: 8px;
             color: #d3d3d3;
         }
+	
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            width: auto;
+            max-height: 45vh;
+        }
     </style>
 </head>
 <body onload="pageLoadTest()">
@@ -76,6 +83,9 @@
         <div class="section" style="background-color: #3e3e3e;">
             <div class="content-block">
                 <h3>Imagine a city with the population of San Francisco suddenly disappearing.</h3>
+				<div class="image-container">
+					<img src="golden_gate.jpg" alt="Golden Gate Bridge">
+				</div>
 				<h3>This number is approximately the amount of lives lost to COVID-19 from March 2020 to May 2023.</h3>
 				<h3>Let’s explore the data to understand this impact better.</h3>
 		   </div>
@@ -89,9 +99,9 @@
             <div class="content-block">
 				<h1>Cumulative Death Count</h1>
                 <h3>While the rate of COVID-19 deaths has slowed over time, the rising cumulative death count tells a different story.</h3>
-				<div id="gender-chart"></div>
+				<div id="total-deaths-chart"></div>
 				<h3>The rising number of cases underscores the persistent spread of COVID-19, despite lower mortality rates.</h3>
-				<script>loadGenderD3Chart()</script>
+				<script>totalDeathsD3Chart()</script>
             </div>
         </div>
         <div class="section" style="background-color: #3e3e3e;">
@@ -128,6 +138,8 @@
         <div class="section" style="background-color: #8e8e8e;">
             <div class="content-block">
                 <h3>Weekly Deaths and Cases in the West</h3>
+				<div id="gender-chart"></div>
+				<script>loadGenderD3Chart()</script>
                 <h3>The West experienced varying impacts, with some states hit harder due to different public health responses and population factors.</h3>
             </div>
         </div>
