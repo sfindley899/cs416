@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="script.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,22 +52,34 @@
         <div class="section" style="background-color: #2e2e2e;">
             <h1>COVID-19 at a glance</h1>
             <div class="content-block">
-                <p>In a world gripped by the COVID-19 pandemic, understanding the data is more crucial than ever...</p>
+                <p>
+					In a world gripped by the COVID-19 pandemic, understanding the data is more crucial than ever. We provide an interactive feature that presenting COVID-19 hospitalization data. You’ll find charts for different stages of the pandemic, showing the number of deaths and cases over time. 
+				</p>
+				<p>
+					Accompanying text provides context for the data, highlighting key events and measures taken. This tool offers a clear view of the pandemic’s impact on our healthcare systems.
+				</p>
             </div>
         </div>
         <div class="section" style="background-color: #3e3e3e;">
             <div class="content-block">
+				<h1>Current COVID-19 Hospitalization Trends</h1>
                 <p>Paragraph that shows current trends. Use d3 to put real numbers here so it's dynamic.</p>
-            </div>
+				<div id="gender-chart"></div>
+				<script>loadGenderD3Chart()</script>
+		   </div>
         </div>
         <div class="section" style="background-color: #4e4e4e;">
             <div class="content-block">
+				<h1>History of the COVID-19 Pandemic - Timeline</h1>
                 <p>Graph that shows state map labeling each state, with special focus on Hawaii, Alaska, and smaller NE states.</p>
             </div>
         </div>
         <div class="section" style="background-color: #5e5e5e;">
             <div class="content-block">
-                <p>Summary of stats by state.</p>
+				<h1>History of the COVID - Timeline</h1>
+                <p> 
+					A graphical summary of COVID-19 statistics by state, including infection rates and deaths
+				</p>
             </div>
         </div>
         <div class="section" style="background-color: #6e6e6e;">
@@ -105,6 +118,5 @@
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
