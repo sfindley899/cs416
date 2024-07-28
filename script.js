@@ -197,7 +197,7 @@ async function createCasesWeeklyChart() {
 }
 
 async function createCumulativeDeathsChart() {
-	const margin = { top: 30, right: 50, bottom: 70, left: 50 },
+	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
 		width = document.body.clientWidth - margin.left - margin.right,
 		height = 500 - margin.top - margin.bottom;
 
@@ -241,8 +241,6 @@ async function createCumulativeDeathsChart() {
 			.style("fill", "none")
 			.style("stroke", "steelblue")
 			.style("stroke-width", "2px");
-
-	
 
 		// Adding annotations
 		const annotations = [
