@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COVID-19 by the Numbers</title>
+    <title>COVID-19’s Death Toll on the US</title>
     <style>
         body {
             margin: 0;
@@ -23,6 +23,12 @@
             align-items: center;
             flex-direction: column;
             scroll-snap-align: start;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
         }
 
         .chart {
@@ -70,6 +76,19 @@
             color: #d3d3d3;
 			max-height: 85vh;
         }
+		
+		#state-select {
+		}
+
+		#update-chart {
+		}
+		.region-chart {
+		    width: 100%;
+            max-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+		}
         .legend {
             font-size: 12px;
             fill: black;
@@ -98,13 +117,16 @@
             height: auto;
             width: auto;
             max-height: 40vh;
-        }
+    		display: block;
+			margin-left: auto;
+			margin-right: auto;
+		}
     </style>
 </head>
 <body onload="pageLoadTest()">
     <div id="container">
         <div class="section" style="background-color: #2e2e2e;">
-            <h1>COVID-19’s Death Toll on the US: A Data-Driven Analysis</h1>
+            <h1>COVID-19’s Death Toll on the US</h1>
             <div class="content-block">
                 <h3>
 					COVID-19 has devastated lives across America.
@@ -112,17 +134,18 @@
 				<h3>
 					Although the US public emergency ended on May 11, 2023, this presentation explores its lasting impact within the country.
 				</h3>
-				<h3><strong>Scroll down to explore the data and insights further.</strong></h3>
+				<h3>Scroll down to explore the data and insights further.</h3>
             </div>
         </div>
         <div class="section" style="background-color: #3e3e3e;">
             <div class="content-block">
-                <h3>Imagine 800,000 people, the population with the city San Francisco suddenly disappearing.</h3>
-				<div class="image-container">
+                <h3>Imagine <strong>800,000 people</strong>, the population with the city San Francisco suddenly disappearing.</h3>
+				<div class="image-container" class="center">
 					<img src="golden_gate.jpg" alt="Golden Gate Bridge">
 				</div>
 				<h3>This number is approximately the amount of lives lost to COVID-19 from March 2020 to May 2023.</h3>
-				<h3>Let’s explore the data to understand this impact better.</h3>
+				<h3>As of June 2024, over <strong>1,000,000</strong> lives were lost to COVID-19.</h3>
+				<h3>Let’s explore the data to understand this, starting with the cumulative deaths.</h3>
 		   </div>
         </div>
         <div class="section" style="background-color: #6e6e6e;">
@@ -211,6 +234,16 @@
         <div class="section" style="background-color: #9e9e9e;">
             <div class="content-block">
                 <h3>Use this interactive slide to explore specific data points, trends, and regional impacts in more detail.</h3>
+				<div class="controls">
+					<select id="state-select" multiple>
+						<!-- Options will be added dynamically -->
+					</select>
+					<input type="date" id="start-date">
+					<input type="date" id="end-date">
+					<button id="update-chart">Update Chart</button>
+				</div>
+				<div id="interactive-chart" class="region-chart"></div>
+				<script>updateChartEntryFunc()</script>
             </div>
         </div>
         <div class="section" style="background-color: #bebebe;">
