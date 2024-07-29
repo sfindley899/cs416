@@ -471,7 +471,7 @@ async function createCasesWeeklySouthChart() {
 
 	initCovidRegionalData().then(data => {
 
-	// Filter data for the Northeast region
+	// Filter data for the South region
 	const filteredData = data.filter(d => d.region === "South");
 
 	// Parse dates and convert new cases to numbers
@@ -498,6 +498,27 @@ async function createCasesWeeklySouthChart() {
 	// Define a color scale
 	const color = d3.scaleOrdinal(d3.schemeCategory10);
 
+	// Create legend
+	const legend = svg.append("g")
+		.attr("transform", `translate(${width + margin.right - 200}, ${0})`);
+
+	// Add background and border for legend
+	const legendWidth = 150;
+    const legendHeight = groupedData.length * 20 + 45; // Adjusted for margin
+
+	legend.append("rect")
+		.attr("width", legendWidth)
+		.attr("height", legendHeight)
+		.attr("class", "legend-bg");
+
+	// Add legend title
+	legend.append("text")
+		.attr("x", legendWidth / 2)
+		.attr("y", 20)
+		.attr("class", "legend-title")
+		.attr("text-anchor", "middle")
+		.text("Southern States");
+
 	// Plot each state's data with a different color
 	groupedData.forEach((stateData, i) => {
 		const line = d3.line()
@@ -510,13 +531,45 @@ async function createCasesWeeklySouthChart() {
 			.attr("d", line)
 			.attr("stroke", color(i));
 
-		// Add a label for each state
+		// Add a random annotation for each state using modulo
+		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
+		const randomDataPoint = stateData.values[randomIndex];
+
+		const annotationX = x(randomDataPoint.date_updated) + 55;
+		const annotationY = y(randomDataPoint.new_cases) - 55;
+
+		svg.append("line")
+			.attr("x1", x(randomDataPoint.date_updated))
+			.attr("x2", annotationX)
+			.attr("y1", y(randomDataPoint.new_cases))
+			.attr("y2", annotationY)
+			.attr("stroke", color(i))
+			.attr("stroke-dasharray", "2,2");
+
 		svg.append("text")
-			.attr("transform", `translate(${width},${y(stateData.values[stateData.values.length - 1].new_cases)})`)
-			.attr("dy", ".35em")
+			.attr("x", annotationX + 5)  // Adding extra space for clarity
+			.attr("y", annotationY)
 			.attr("text-anchor", "start")
 			.attr("class", "legend")
 			.style("fill", color(i))
+			.text(stateData.key);
+
+		// Legend
+		const legendRow = legend.append("g")
+              .attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
+
+
+		legendRow.append("rect")
+			.attr("width", 10)
+			.attr("height", 10)
+			.attr("class", "legend-box")
+			.attr("fill", color(i));
+
+
+		legendRow.append("text")
+			.attr("x", 20)
+			.attr("y", 10)
+			.attr("class", "legend")
 			.text(stateData.key);
 	});
 
@@ -533,16 +586,286 @@ async function createCasesWeeklySouthChart() {
 		.attr("y", -margin.left + 20)
 		.attr("x", -height / 2 + margin.top)
 		.text("New Cases");
-		
+
+	});
+}
+
+async function createCasesWeeklyMidwestChart() {
+	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
+		width = document.body.clientWidth - margin.left - margin.right,
+		height = 425 - margin.top - margin.bottom;
+
+	const parseDate = d3.timeParse("%m/%d/%Y");
+
+	const x = d3.scaleTime().range([0, width]);
+	const y = d3.scaleLinear().range([height, 0]);
+
+	const svg = d3.select("#cases-chart-midwest").append("svg")
+		.attr("width", '100%')
+		.attr("height", '100%')
+		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+		.attr("preserveAspectRatio", "xMidYMid meet")
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	initCovidRegionalData().then(data => {
+
+	// Filter data for the South region
+	const filteredData = data.filter(d => d.region === "Midwest");
+
+	// Parse dates and convert new cases to numbers
+	filteredData.forEach(d => {
+		d.date_updated = parseDate(d.date_updated);
+		d.new_cases = +d.new_cases;
+	});
+
+	// Group data by state
+	const groupedData = d3.nest()
+		.key(d => d.state_full)
+		.entries(filteredData);
+
+	x.domain(d3.extent(filteredData, d => d.date_updated));
+	y.domain([0, d3.max(filteredData, d => d.new_cases)]);
+
+	svg.append("g")
+		.attr("transform", "translate(0," + height + ")")
+		.call(d3.axisBottom(x));
+
+	svg.append("g")
+		.call(d3.axisLeft(y));
+
+	// Define a color scale
+	const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+	// Create legend
+	const legend = svg.append("g")
+		.attr("transform", `translate(${width + margin.right - 200}, ${0})`);
+
+	// Add background and border for legend
+	const legendWidth = 150;
+    const legendHeight = groupedData.length * 20 + 45; // Adjusted for margin
+
+	legend.append("rect")
+		.attr("width", legendWidth)
+		.attr("height", legendHeight)
+		.attr("class", "legend-bg");
+
+	// Add legend title
+	legend.append("text")
+		.attr("x", legendWidth / 2)
+		.attr("y", 20)
+		.attr("class", "legend-title")
+		.attr("text-anchor", "middle")
+		.text("Midwest States");
+
+	// Plot each state's data with a different color
+	groupedData.forEach((stateData, i) => {
+		const line = d3.line()
+			.x(d => x(d.date_updated))
+			.y(d => y(d.new_cases));
+
+		svg.append("path")
+			.datum(stateData.values)
+			.attr("class", "line")
+			.attr("d", line)
+			.attr("stroke", color(i));
+
+		// Add a random annotation for each state using modulo
+		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
+		const randomDataPoint = stateData.values[randomIndex];
+
+		const annotationX = x(randomDataPoint.date_updated) + 55;
+		const annotationY = y(randomDataPoint.new_cases) - 55;
+
+		svg.append("line")
+			.attr("x1", x(randomDataPoint.date_updated))
+			.attr("x2", annotationX)
+			.attr("y1", y(randomDataPoint.new_cases))
+			.attr("y2", annotationY)
+			.attr("stroke", color(i))
+			.attr("stroke-dasharray", "2,2");
+
+		svg.append("text")
+			.attr("x", annotationX + 5)  // Adding extra space for clarity
+			.attr("y", annotationY)
+			.attr("text-anchor", "start")
+			.attr("class", "legend")
+			.style("fill", color(i))
+			.text(stateData.key);
+
+		// Legend
+		const legendRow = legend.append("g")
+              .attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
+
+
+		legendRow.append("rect")
+			.attr("width", 10)
+			.attr("height", 10)
+			.attr("class", "legend-box")
+			.attr("fill", color(i));
+
+
+		legendRow.append("text")
+			.attr("x", 20)
+			.attr("y", 10)
+			.attr("class", "legend")
+			.text(stateData.key);
+	});
+
+	// Add axis labels
+	svg.append("text")
+		.attr("text-anchor", "end")
+		.attr("x", width / 2 + margin.left)
+		.attr("y", height + margin.top + 40)
+		.text("Date");
+
+	svg.append("text")
+		.attr("text-anchor", "end")
+		.attr("transform", "rotate(-90)")
+		.attr("y", -margin.left + 20)
+		.attr("x", -height / 2 + margin.top)
+		.text("New Cases");
+
 	});
 }
 
 async function createCasesWeeklyWestChart() {
+	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
+		width = document.body.clientWidth - margin.left - margin.right,
+		height = 425 - margin.top - margin.bottom;
 
-}
+	const parseDate = d3.timeParse("%m/%d/%Y");
 
-async function createCasesWeeklyMidwestChart() {
+	const x = d3.scaleTime().range([0, width]);
+	const y = d3.scaleLinear().range([height, 0]);
 
+	const svg = d3.select("#cases-chart-west").append("svg")
+		.attr("width", '100%')
+		.attr("height", '100%')
+		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+		.attr("preserveAspectRatio", "xMidYMid meet")
+		.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	initCovidRegionalData().then(data => {
+
+	// Filter data for the South region
+	const filteredData = data.filter(d => d.region === "West");
+
+	// Parse dates and convert new cases to numbers
+	filteredData.forEach(d => {
+		d.date_updated = parseDate(d.date_updated);
+		d.new_cases = +d.new_cases;
+	});
+
+	// Group data by state
+	const groupedData = d3.nest()
+		.key(d => d.state_full)
+		.entries(filteredData);
+
+	x.domain(d3.extent(filteredData, d => d.date_updated));
+	y.domain([0, d3.max(filteredData, d => d.new_cases)]);
+
+	svg.append("g")
+		.attr("transform", "translate(0," + height + ")")
+		.call(d3.axisBottom(x));
+
+	svg.append("g")
+		.call(d3.axisLeft(y));
+
+	// Define a color scale
+	const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+	// Create legend
+	const legend = svg.append("g")
+		.attr("transform", `translate(${width + margin.right - 200}, ${0})`);
+
+	// Add background and border for legend
+	const legendWidth = 150;
+    const legendHeight = groupedData.length * 20 + 45; // Adjusted for margin
+
+	legend.append("rect")
+		.attr("width", legendWidth)
+		.attr("height", legendHeight)
+		.attr("class", "legend-bg");
+
+	// Add legend title
+	legend.append("text")
+		.attr("x", legendWidth / 2)
+		.attr("y", 20)
+		.attr("class", "legend-title")
+		.attr("text-anchor", "middle")
+		.text("Western States");
+
+	// Plot each state's data with a different color
+	groupedData.forEach((stateData, i) => {
+		const line = d3.line()
+			.x(d => x(d.date_updated))
+			.y(d => y(d.new_cases));
+
+		svg.append("path")
+			.datum(stateData.values)
+			.attr("class", "line")
+			.attr("d", line)
+			.attr("stroke", color(i));
+
+		// Add a random annotation for each state using modulo
+		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
+		const randomDataPoint = stateData.values[randomIndex];
+
+		const annotationX = x(randomDataPoint.date_updated) + 55;
+		const annotationY = y(randomDataPoint.new_cases) - 55;
+
+		svg.append("line")
+			.attr("x1", x(randomDataPoint.date_updated))
+			.attr("x2", annotationX)
+			.attr("y1", y(randomDataPoint.new_cases))
+			.attr("y2", annotationY)
+			.attr("stroke", color(i))
+			.attr("stroke-dasharray", "2,2");
+
+		svg.append("text")
+			.attr("x", annotationX + 5)  // Adding extra space for clarity
+			.attr("y", annotationY)
+			.attr("text-anchor", "start")
+			.attr("class", "legend")
+			.style("fill", color(i))
+			.text(stateData.key);
+
+		// Legend
+		const legendRow = legend.append("g")
+              .attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
+
+
+		legendRow.append("rect")
+			.attr("width", 10)
+			.attr("height", 10)
+			.attr("class", "legend-box")
+			.attr("fill", color(i));
+
+
+		legendRow.append("text")
+			.attr("x", 20)
+			.attr("y", 10)
+			.attr("class", "legend")
+			.text(stateData.key);
+	});
+
+	// Add axis labels
+	svg.append("text")
+		.attr("text-anchor", "end")
+		.attr("x", width / 2 + margin.left)
+		.attr("y", height + margin.top + 40)
+		.text("Date");
+
+	svg.append("text")
+		.attr("text-anchor", "end")
+		.attr("transform", "rotate(-90)")
+		.attr("y", -margin.left + 20)
+		.attr("x", -height / 2 + margin.top)
+		.text("New Cases");
+
+	});
 }
 
 async function loadGenderD3Chart() {
@@ -576,4 +899,8 @@ async function loadCasesWeeklyNortheastD3Chart() {
 async function loadCasesWeeklySouthD3Chart() {
 	createCasesWeeklySouthChart();
 }
+
+async function loadInteractiveD3Chart() {
+}
+
 
