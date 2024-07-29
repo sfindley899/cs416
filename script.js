@@ -59,58 +59,12 @@ function renderCurrentTrendsGraph() {
 }
 
 async function createGenderD3Chart() {
-	const margin = { top: 30, right: 20, bottom: 70, left: 50 },
-		width = 600 - margin.left - margin.right,
-		height = 300 - margin.top - margin.bottom;
-
-	const parseDate = d3.timeParse("%Y-%m");
-
-	const x = d3.scaleBand().range([0, width]).padding(0.1);
-	const y = d3.scaleLinear().range([height, 0]);
-
-	const svg = d3.select("#gender-chart").append("svg")
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
-		.append("g")
-		.attr("transform",
-			"translate(" + margin.left + "," + margin.top + ")");
-
-	initCovidGenderData().then(data => {
-		data.forEach(d => {
-			d.date = parseDate(d.Year + "-" + d.Month);
-			d["COVID-19 Deaths"] = +d["COVID-19 Deaths"];
-		});
-
-		x.domain(data.map(d => d.date));
-		y.domain([0, d3.max(data, d => d["COVID-19 Deaths"])]);
-
-		svg.append("g")
-			.attr("transform", "translate(0," + height + ")")
-			.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%b %Y")))
-			.selectAll("text")
-			.style("text-anchor", "end")
-			.attr("dx", "-.8em")
-			.attr("dy", "-.55em")
-			.attr("transform", "rotate(-90)");
-
-		svg.append("g")
-			.call(d3.axisLeft(y));
-
-		svg.selectAll("bar")
-			.data(data)
-			.enter().append("rect")
-			.style("fill", "steelblue")
-			.attr("x", d => x(d.date))
-			.attr("width", x.bandwidth())
-			.attr("y", d => y(d["COVID-19 Deaths"]))
-			.attr("height", d => height - y(d["COVID-19 Deaths"]));
-	});
 }
 
 async function createDeathsWeeklyChart() {
 	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
 		width = document.body.clientWidth - margin.left - margin.right,
-		height = 450 - margin.top - margin.bottom;
+		height = 425 - margin.top - margin.bottom;
 
 	const parseDate = d3.timeParse("%m/%d/%Y");
 
@@ -142,6 +96,31 @@ async function createDeathsWeeklyChart() {
 		svg.append("g")
 			.call(d3.axisLeft(y));
 
+		// X Axis label
+		svg.append("text")
+			.attr("text-anchor", "end")
+			.attr("x", width / 2 + margin.left)
+			.attr("y", height + margin.top + 40)
+			.text("Date");
+
+		// Y Axis label
+		svg.append("text")
+			.attr("text-anchor", "end")
+			.attr("transform", "rotate(-90)")
+			.attr("y", -margin.left + 20)
+			.attr("x", -height / 2 + margin.top)
+			.text("New Cases");
+
+		const area = d3.area()
+			.x(d => x(d.date))
+			.y0(height)
+			.y1(d => y(d.weekly_deaths));
+
+		svg.append("path")
+			.data([data])
+			.attr("class", "area")
+			.attr("d", area);
+
 		const line = d3.line()
 			.x(d => x(d.date))
 			.y(d => y(d.weekly_deaths));
@@ -159,7 +138,7 @@ async function createDeathsWeeklyChart() {
 async function createCasesWeeklyChart() {
 	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
 		width = document.body.clientWidth - margin.left - margin.right,
-		height = 450 - margin.top - margin.bottom;
+		height = 425 - margin.top - margin.bottom;
 
 
 	const parseDate = d3.timeParse("%m/%d/%Y");
@@ -250,7 +229,7 @@ async function createCasesWeeklyChart() {
 async function createCumulativeDeathsChart() {
 	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
 		width = document.body.clientWidth - margin.left - margin.right,
-		height = 450 - margin.top - margin.bottom;
+		height = 425 - margin.top - margin.bottom;
 
 	const parseDate = d3.timeParse("%m/%d/%Y");
 
@@ -281,6 +260,32 @@ async function createCumulativeDeathsChart() {
 		svg.append("g")
 			.call(d3.axisLeft(y));
 
+		// X Axis label
+		svg.append("text")
+			.attr("text-anchor", "end")
+			.attr("x", width / 2 + margin.left)
+			.attr("y", height + margin.top + 40)
+			.text("Date");
+
+		// Y Axis label
+		svg.append("text")
+			.attr("text-anchor", "end")
+			.attr("transform", "rotate(-90)")
+			.attr("y", -margin.left + 20)
+			.attr("x", -height / 2 + margin.top)
+			.text("New Cases");
+
+		const area = d3.area()
+			.x(d => x(d.date_value))
+			.y0(height)
+			.y1(d => y(d["Cumulative Deaths"]));
+
+		svg.append("path")
+			.data([data])
+			.attr("class", "area")
+			.attr("d", area);
+
+
 		const line = d3.line()
 			.x(d => x(d.date_value))
 			.y(d => y(d["Cumulative Deaths"]));
@@ -293,32 +298,17 @@ async function createCumulativeDeathsChart() {
 			.style("stroke", "steelblue")
 			.style("stroke-width", "2px");
 
-		// Adding annotations
+		// Adding annotations using d3-annotation library
 		const annotations = [
-			{date: "1/11/2020", value: getDateValue("1/11/2020"), text: "First Death"},
-			{date: "1/25/2020", value: getDateValue("1/25/2020"), text: "6 Deaths"},
-			{date: "2/8/2020", value: getDateValue("2/8/2020"), text: "10 Deaths"},
-			{date: "2/15/2020", value: getDateValue("2/15/2020"), text: "16 Deaths"},
-			{date: "2/15/2020", value: getDateValue("2/15/2020"), text: "22 Deaths"}
+			{ note: { label: "Significant Drop", bgPadding: 5 }, x: x(parseDate("1/11/2020")), y: y(100000), dy: -30, dx: 0 },
+			{ note: { label: "Peak", bgPadding: 5 }, x: x(parseDate("1/25/2022")), y: y(700000), dy: -30, dx: 0 },
 		];
 
-		annotations.forEach(ann => {
-			const date = parseDate(ann.date);
-			svg.append("line")
-				.attr("x1", x(date))
-				.attr("x2", x(date))
-				.attr("y1", y(ann.value))
-				.attr("y2", height)
-				.attr("stroke", "red")
-				.attr("stroke-dasharray", "2,2");
+		const makeAnnotations = d3.annotation()
+			.annotations(annotations);
 
-			svg.append("text")
-				.attr("x", x(date))
-				.attr("y", y(ann.value) - 10)
-				.attr("text-anchor", "middle")
-				.attr("class", "annotation")
-				.text(ann.text);
-		});
+		svg.append("g")
+			.call(makeAnnotations);
 	});
 }
 
