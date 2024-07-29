@@ -339,6 +339,7 @@ async function createCumulativeDeathsChart() {
 		svg.append("path")
 			.data([data])
 			.attr("class", "area")
+			.style("stroke", "steelblue")
 			.attr("d", area);
 
 
