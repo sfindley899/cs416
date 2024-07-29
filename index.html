@@ -70,7 +70,29 @@
             color: #d3d3d3;
 			max-height: 85vh;
         }
-	
+        .legend {
+            font-size: 12px;
+            fill: black;
+        }
+        .line {
+            fill: none;
+            stroke-width: 2px;
+        }
+        .legend-box {
+            stroke: black;
+            stroke-width: 1px;
+        }
+        .legend-bg {
+            fill: lightgray;
+            opacity: 0.8;
+        }
+        .legend-title {
+            font-size: 14px;
+            font-weight: bold;
+            fill: black;
+			margin: 10px 0;
+
+        }
         .image-container img {
             max-width: 100%;
             height: auto;
@@ -150,7 +172,11 @@
         <div class="section" style="background-color: #7e7e7e;">
             <div class="content-block">
                 <h3>Weekly Deaths and Cases in the Northeast.</h3>
+				<div id="cases-chart-northeast"></div>
                 <h3>The Northeast faced significant challenges at various points during the pandemic, reflecting its high population density and initial outbreak.</h3>
+				
+				<script>loadCasesWeeklyNortheastD3Chart()</script>
+			
             </div>
         </div>
         <div class="section" style="background-color: #8e8e8e;">
