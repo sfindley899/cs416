@@ -318,7 +318,7 @@ async function createCumulativeDeathsChart() {
 			if (dataPoint) {
 			console.log("found data point")
 			const annotationX = x(parseDate(ann.date));
-			const annotationY = y(dataPoint["Cumulative Deaths"]) - 10;
+			const annotationY = y(dataPoint["Cumulative Deaths"]) - 15;
 
 			svg.append("line")
 				.attr("x1", annotationX)
@@ -355,7 +355,6 @@ async function createCasesWeeklyChart() {
 		width = document.body.clientWidth - margin.left - margin.right,
 		height = 425 - margin.top - margin.bottom;
 
-
 	const parseDate = d3.timeParse("%m/%d/%Y");
 
 	const x = d3.scaleTime().range([0, width]);
@@ -375,6 +374,8 @@ async function createCasesWeeklyChart() {
 			d.date_updated = parseDate(d.date_updated);
 			d.new_cases = +d.new_cases;
 		});
+		const proximityThreshold = 150; // Adjust this value as needed
+		const formatDateString = date => d3.timeFormat("%Y-%m-%d")(date);
 
 		// Aggregate data by date
 		const aggregatedData = d3.nest()
@@ -418,7 +419,146 @@ async function createCasesWeeklyChart() {
 		svg.append("path")
 			.datum(aggregatedData)
 			.attr("class", "area")
-			.attr("d", area);
+			.attr("d", area)
+		    .on("mousemove", function(event) {
+			   const [mouseX, mouseY] = d3.mouse(this);
+			   const date = x.invert(mouseX);
+			   const dataPoint = data.find(dp => {
+				   const annotationValuesX = x(dp.date_updated);
+				   const annotationValuesY = y(dp.new_cases);
+				   const distance = Math.sqrt(Math.pow(mouseX - annotationValuesX, 2) + Math.pow(mouseY - annotationValuesY, 2));
+				   return distance < proximityThreshold;
+			   });
+
+			   if (dataPoint) {
+				   const annotationValuesX = x(dataPoint.date_updated);
+				   const annotationValuesY = y(dataPoint.new_cases);
+
+				   // Remove existing annotations
+				   svg.selectAll(".annotation-line").remove();
+				   svg.selectAll(".annotation-text").remove();
+				   svg.selectAll(".annotation-rect").remove();
+
+				   // Add dotted line below the point
+				   svg.append("line")
+					  .attr("class", "annotation-line")
+					  .attr("x1", annotationValuesX)
+					  .attr("x2", annotationValuesX)
+					  .attr("y1", annotationValuesY - 20) // Adjust this value to make the line higher
+					  .attr("y2", height) // Extend to the bottom of the SVG
+					  .attr("stroke", "black")
+					  .attr("stroke-dasharray", "4,4");
+
+				   // Add background rectangle
+				   const textGroup = svg.append("g")
+										.attr("class", "annotation-text-group");
+
+				   textGroup.append("rect")
+							.attr("class", "annotation-rect")
+							.attr("x", annotationValuesX - 55)
+							.attr("y", annotationValuesY - 90) // Adjust as needed
+							.attr("width", 175) // Adjust as needed
+							.attr("height", 50) // Adjust as needed
+							.attr("fill", "white")
+							.attr("stroke", "black");
+
+				// Add text
+				const textElement = textGroup.append("text")
+											.attr("class", "annotation-text")
+											.attr("x", annotationValuesX - 50)
+											.attr("y", annotationValuesY - 50) // Elevate the text
+											.attr("text-anchor", "start")
+											.style("fill", "black")
+											.style("font-weight", "bold");
+
+           textElement.selectAll("tspan")
+                      .data(["Date: " + dataPoint.end_date + "Total Deaths: " + dataPoint.new_cases])
+                      .enter()
+                      .append("tspan")
+                      .attr("x", annotationValuesX - 50)
+                      .attr("dy", (d, i) => i * 20) // Adjust line spacing as needed
+                      .text(d => d);
+			   }
+		   })
+		   .on("mouseout", function() {
+			   // Remove annotation
+			   svg.selectAll(".annotation-line").remove();
+			   svg.selectAll(".annotation-text").remove();
+			   svg.selectAll(".annotation-rect").remove();
+		   });
+
+		svg.append("path")
+			.datum(aggregatedData)
+			.attr("class", "area")
+			.attr("d", area)
+		    .on("mousemove", function(event) {
+			   const [mouseX, mouseY] = d3.mouse(this);
+			   const date = x.invert(mouseX);
+			   const dataPoint = data.find(dp => {
+				   const annotationValuesX = x(dp.date_updated);
+				   const annotationValuesY = y(dp.new_cases);
+				   const distance = Math.sqrt(Math.pow(mouseX - annotationValuesX, 2) + Math.pow(mouseY - annotationValuesY, 2));
+				   return distance < proximityThreshold;
+			   });
+
+			   if (dataPoint) {
+				   const annotationValuesX = x(dataPoint.date_updated);
+				   const annotationValuesY = y(dataPoint.new_cases);
+
+				   // Remove existing annotations
+				   svg.selectAll(".annotation-line").remove();
+				   svg.selectAll(".annotation-text").remove();
+				   svg.selectAll(".annotation-rect").remove();
+
+				   // Add dotted line below the point
+				   svg.append("line")
+					  .attr("class", "annotation-line")
+					  .attr("x1", annotationValuesX)
+					  .attr("x2", annotationValuesX)
+					  .attr("y1", annotationValuesY - 20) // Adjust this value to make the line higher
+					  .attr("y2", height) // Extend to the bottom of the SVG
+					  .attr("stroke", "black")
+					  .attr("stroke-dasharray", "4,4");
+
+				   // Add background rectangle
+				   const textGroup = svg.append("g")
+										.attr("class", "annotation-text-group");
+
+				   textGroup.append("rect")
+							.attr("class", "annotation-rect")
+							.attr("x", annotationValuesX - 55)
+							.attr("y", annotationValuesY - 90) // Adjust as needed
+							.attr("width", 175) // Adjust as needed
+							.attr("height", 50) // Adjust as needed
+							.attr("fill", "white")
+							.attr("stroke", "black");
+
+				// Add text
+				const textElement = textGroup.append("text")
+											.attr("class", "annotation-text")
+											.attr("x", annotationValuesX - 50)
+											.attr("y", annotationValuesY - 50) // Elevate the text
+											.attr("text-anchor", "start")
+											.style("fill", "black")
+											.style("font-weight", "bold");
+
+           textElement.selectAll("tspan")
+                      .data(["Date: " + dataPoint.end_date + "Total Deaths: " + dataPoint.new_cases])
+                      .enter()
+                      .append("tspan")
+                      .attr("x", annotationValuesX - 50)
+                      .attr("dy", (d, i) => i * 20) // Adjust line spacing as needed
+                      .text(d => d);
+			   }
+		   })
+		   .on("mouseout", function() {
+			   // Remove annotation
+			   svg.selectAll(".annotation-line").remove();
+			   svg.selectAll(".annotation-text").remove();
+			   svg.selectAll(".annotation-rect").remove();
+		   });
+
+
 
 		const line = d3.line()
 			.x(d => x(d.date))
@@ -429,17 +569,45 @@ async function createCasesWeeklyChart() {
 			.attr("class", "line")
 			.attr("d", line);
 
-		// Adding annotations using d3-annotation library
-		const annotations = [
-			{ note: { label: "Significant Drop", bgPadding: 5 }, x: x(parseDate("1/11/2020")), y: y(100000), dy: -30, dx: 0 },
-			{ note: { label: "Peak", bgPadding: 5 }, x: x(parseDate("1/25/2022")), y: y(700000), dy: -30, dx: 0 },
-		];
 
-		const makeAnnotations = d3.annotation()
-			.annotations(annotations);
+		// Add annotations to the chart
+		total_death_annotations.forEach(ann => {
+			console.log(parseDate(ann.date))
+			const dataPoint = data.find(d => formatDateString(d.date_updated) === formatDateString(parseDate(ann.date)));
+			if (dataPoint) {
+			console.log("found data point")
+			const annotationX = x(parseDate(ann.date));
+			const annotationY = y(dataPoint.new_cases) - 15;
 
-		svg.append("g")
-			.call(makeAnnotations);
+			svg.append("line")
+				.attr("x1", annotationX)
+				.attr("x2", annotationX)
+				.attr("y1", height - 20)
+				.attr("y2", annotationY)
+				.attr("stroke", "black")
+				.attr("stroke-dasharray", "2,2");
+
+			svg.append("rect")
+				.attr("x", annotationX + 5)
+				.attr("y", annotationY - 40)
+				.attr("width", 230)
+				.attr("height", 60)
+				.attr("fill", "black")
+				.attr("opacity", 0.7);
+
+			svg.append("text")
+				.attr("x", annotationX + 10)
+				.attr("y", annotationY - 15)
+				.attr("text-anchor", "start")
+				.attr("class", "annotation")
+				.attr("fill", "white")
+				.style("font-weight", "bold")
+				.text(ann.label)
+				.call(wrapText, 150); // Function to wrap text within the specified width	
+			}
+		});
+
+
 	});
 }
 
