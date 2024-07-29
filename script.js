@@ -1,5 +1,5 @@
 // Define the major dates and corresponding counts for annotations
-const annotations = [
+const total_death_annotations = [
 //{ date: "1/25/2020", count: null, label: "January 2020:\nFirst COVID-19 case in the US" },
 //{ date: "2/1/2020", count: null, label: "January 2020:\nPublic health emergency declared" },
 { date: "3/14/2020", count: null, label: "March 2020:\nNational emergency declared" },
@@ -25,7 +25,6 @@ const annotations_x = [
 { date: "11/6/2021", count: null, label: "November 2021:\nVaccines for children approved" },
 { date: "5/13/2023", count: null, label: "May 2023:\nPublic health emergency ends" }
 ];
-
 
 const body = document.body;
 const html = document.documentElement;
@@ -166,7 +165,7 @@ function renderCurrentTrendsGraph() {
 async function createGenderD3Chart() {
 }
 
-async function createDeathsWeeklyChart() {
+async function createCumulativeDeathsChart() {
 	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
 		width = document.body.clientWidth - margin.left - margin.right,
 		height = 425 - margin.top - margin.bottom;
@@ -176,23 +175,22 @@ async function createDeathsWeeklyChart() {
 	const x = d3.scaleTime().range([0, width]);
 	const y = d3.scaleLinear().range([height, 0]);
 
-	const svg = d3.select("#deaths-chart").append("svg")
+	const svg = d3.select("#total-deaths-chart").append("svg")
 		.attr("width", '90%')
 		.attr("height", '100%')
 		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
 		.attr("preserveAspectRatio", "xMidYMid meet")
 		.append("g")
-		.attr("transform",
-			"translate(" + (margin.left + 20) + "," + margin.top + ")");
+		.attr("transform", "translate(" + (margin.left + 20)+ "," + margin.top + ")");
 
-	initCovidWeeklyDeathData().then(data => {
+	initCovidTotalDeathData().then(data => {
 		data.forEach(d => {
-			d.date = parseDate(d.date);
-			d.weekly_deaths = +d.weekly_deaths;
+			d.date_value = parseDate(d.date_value);
+			d["Cumulative Deaths"] = +d["Cumulative Deaths"];
 		});
 
-		x.domain(d3.extent(data, d => d.date));
-		y.domain([0, d3.max(data, d => d.weekly_deaths)]);
+		x.domain(d3.extent(data, d => d.date_value));
+		y.domain([0, d3.max(data, d => d["Cumulative Deaths"])]);
 
 		svg.append("g")
 			.attr("transform", "translate(0," + height + ")")
@@ -203,7 +201,7 @@ async function createDeathsWeeklyChart() {
 
 		// X Axis label
 		svg.append("text")
-		    .attr("class", "axis-label")
+			.attr("class", "axis-label")
 			.attr("text-anchor", "end")
 			.attr("x", width / 2 + margin.left)
 			.attr("y", height + margin.top + 40)
@@ -211,34 +209,144 @@ async function createDeathsWeeklyChart() {
 
 		// Y Axis label
 		svg.append("text")
-			.attr("class", "axis-label")
+		    .attr("class", "axis-label")
 			.attr("text-anchor", "end")
 			.attr("transform", "rotate(-90)")
-			.attr("y", -margin.left + 20)
+			.attr("y", -margin.left)
 			.attr("x", -height / 3)
 			.text("New Deaths per Week");
 
 		const area = d3.area()
-			.x(d => x(d.date))
+			.x(d => x(d.date_value))
 			.y0(height)
-			.y1(d => y(d.weekly_deaths));
+			.y1(d => y(d["Cumulative Deaths"]));
+
+		// Function to format dates as strings for comparison
+		const formatDateString = date => d3.timeFormat("%Y-%m-%d")(date);
+		const proximityThreshold = 100; // Adjust this value as needed
+
 
 		svg.append("path")
 			.data([data])
 			.attr("class", "area")
-			.attr("d", area);
+			.style("stroke", "steelblue")
+			.attr("d", area)
+		    .on("mousemove", function(event) {
+			   const [mouseX, mouseY] = d3.mouse(this);
+			   const date = x.invert(mouseX);
+			   const dataPoint = data.find(dp => {
+				   const annotationValuesX = x(dp.date_value);
+				   const annotationValuesY = y(dp["Cumulative Deaths"]);
+				   const distance = Math.sqrt(Math.pow(mouseX - annotationValuesX, 2) + Math.pow(mouseY - annotationValuesY, 2));
+				   return distance < proximityThreshold;
+			   });
+
+			   if (dataPoint) {
+				   const annotationValuesX = x(dataPoint.date_value);
+				   const annotationValuesY = y(dataPoint["Cumulative Deaths"]);
+
+				   // Remove existing annotations
+				   svg.selectAll(".annotation-line").remove();
+				   svg.selectAll(".annotation-text").remove();
+				   svg.selectAll(".annotation-rect").remove();
+
+				   // Add dotted line below the point
+				   svg.append("line")
+					  .attr("class", "annotation-line")
+					  .attr("x1", annotationValuesX)
+					  .attr("x2", annotationValuesX)
+					  .attr("y1", annotationValuesY - 20) // Adjust this value to make the line higher
+					  .attr("y2", height) // Extend to the bottom of the SVG
+					  .attr("stroke", "black")
+					  .attr("stroke-dasharray", "4,4");
+
+				   // Add background rectangle
+				   const textGroup = svg.append("g")
+										.attr("class", "annotation-text-group");
+
+				   textGroup.append("rect")
+							.attr("class", "annotation-rect")
+							.attr("x", annotationValuesX - 55)
+							.attr("y", annotationValuesY - 40) // Adjust as needed
+							.attr("width", 175) // Adjust as needed
+							.attr("height", 50) // Adjust as needed
+							.attr("fill", "white")
+							.attr("stroke", "black");
+
+				// Add text
+				const textElement = textGroup.append("text")
+											.attr("class", "annotation-text")
+											.attr("x", annotationValuesX - 50)
+											.attr("y", annotationValuesY - 20) // Elevate the text
+											.attr("text-anchor", "start")
+											.style("fill", "black")
+											.style("font-weight", "bold");
+
+           textElement.selectAll("tspan")
+                      .data(["Date: " + dataPoint.date_str, "Total Deaths: " + dataPoint["Cumulative Deaths"]])
+                      .enter()
+                      .append("tspan")
+                      .attr("x", annotationValuesX - 50)
+                      .attr("dy", (d, i) => i * 20) // Adjust line spacing as needed
+                      .text(d => d);
+			   }
+		   })
+		   .on("mouseout", function() {
+			   // Remove annotation
+			   svg.selectAll(".annotation-line").remove();
+			   svg.selectAll(".annotation-text").remove();
+			   svg.selectAll(".annotation-rect").remove();
+		   });
+
 
 		const line = d3.line()
-			.x(d => x(d.date))
-			.y(d => y(d.weekly_deaths));
+			.x(d => x(d.date_value))
+			.y(d => y(d["Cumulative Deaths"]));
 
 		svg.append("path")
-			.data([data])
-			.attr("class", "line")
-			.attr("d", line)
-			.style("fill", "none")
-			.style("stroke", "steelblue")
-			.style("stroke-width", "2px");
+		   .data([data])
+		   .attr("class", "line")
+		   .attr("d", line)
+		   .style("fill", "none")
+		   .style("stroke", "steelblue")
+		   .style("stroke-width", "2px");
+
+		// Add annotations to the chart
+		total_death_annotations.forEach(ann => {
+			console.log(parseDate(ann.date))
+			const dataPoint = data.find(d => formatDateString(d.date_value) === formatDateString(parseDate(ann.date)));
+			if (dataPoint) {
+			console.log("found data point")
+			const annotationX = x(parseDate(ann.date));
+			const annotationY = y(dataPoint["Cumulative Deaths"]) - 10;
+
+			svg.append("line")
+				.attr("x1", annotationX)
+				.attr("x2", annotationX)
+				.attr("y1", height - 20)
+				.attr("y2", annotationY)
+				.attr("stroke", "black")
+				.attr("stroke-dasharray", "2,2");
+
+			svg.append("rect")
+				.attr("x", annotationX + 5)
+				.attr("y", annotationY - 40)
+				.attr("width", 230)
+				.attr("height", 60)
+				.attr("fill", "black")
+				.attr("opacity", 0.7);
+
+			svg.append("text")
+				.attr("x", annotationX + 10)
+				.attr("y", annotationY - 15)
+				.attr("text-anchor", "start")
+				.attr("class", "annotation")
+				.attr("fill", "white")
+				.style("font-weight", "bold")
+				.text(ann.label)
+				.call(wrapText, 150); // Function to wrap text within the specified width	
+			}
+		});
 	});
 }
 
@@ -335,7 +443,7 @@ async function createCasesWeeklyChart() {
 	});
 }
 
-async function createCumulativeDeathsChart() {
+async function createDeathsWeeklyChart() {
 	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
 		width = document.body.clientWidth - margin.left - margin.right,
 		height = 425 - margin.top - margin.bottom;
@@ -345,22 +453,23 @@ async function createCumulativeDeathsChart() {
 	const x = d3.scaleTime().range([0, width]);
 	const y = d3.scaleLinear().range([height, 0]);
 
-	const svg = d3.select("#total-deaths-chart").append("svg")
+	const svg = d3.select("#deaths-chart").append("svg")
 		.attr("width", '90%')
 		.attr("height", '100%')
 		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
 		.attr("preserveAspectRatio", "xMidYMid meet")
 		.append("g")
-		.attr("transform", "translate(" + (margin.left + 20)+ "," + margin.top + ")");
+		.attr("transform",
+			"translate(" + (margin.left + 20) + "," + margin.top + ")");
 
-	initCovidTotalDeathData().then(data => {
+	initCovidWeeklyDeathData().then(data => {
 		data.forEach(d => {
-			d.date_value = parseDate(d.date_value);
-			d["Cumulative Deaths"] = +d["Cumulative Deaths"];
+			d.date = parseDate(d.date);
+			d.weekly_deaths = +d.weekly_deaths;
 		});
 
-		x.domain(d3.extent(data, d => d.date_value));
-		y.domain([0, d3.max(data, d => d["Cumulative Deaths"])]);
+		x.domain(d3.extent(data, d => d.date));
+		y.domain([0, d3.max(data, d => d.weekly_deaths)]);
 
 		svg.append("g")
 			.attr("transform", "translate(0," + height + ")")
@@ -371,7 +480,7 @@ async function createCumulativeDeathsChart() {
 
 		// X Axis label
 		svg.append("text")
-			.attr("class", "axis-label")
+		    .attr("class", "axis-label")
 			.attr("text-anchor", "end")
 			.attr("x", width / 2 + margin.left)
 			.attr("y", height + margin.top + 40)
@@ -379,120 +488,34 @@ async function createCumulativeDeathsChart() {
 
 		// Y Axis label
 		svg.append("text")
-		    .attr("class", "axis-label")
+			.attr("class", "axis-label")
 			.attr("text-anchor", "end")
 			.attr("transform", "rotate(-90)")
-			.attr("y", -margin.left)
+			.attr("y", -margin.left + 20)
 			.attr("x", -height / 3)
 			.text("New Deaths per Week");
 
 		const area = d3.area()
-			.x(d => x(d.date_value))
+			.x(d => x(d.date))
 			.y0(height)
-			.y1(d => y(d["Cumulative Deaths"]));
+			.y1(d => y(d.weekly_deaths));
 
 		svg.append("path")
 			.data([data])
 			.attr("class", "area")
-			.style("stroke", "steelblue")
 			.attr("d", area);
 
-
 		const line = d3.line()
-			.x(d => x(d.date_value))
-			.y(d => y(d["Cumulative Deaths"]));
-
-			// Function to format dates as strings for comparison
-			const formatDateString = date => d3.timeFormat("%Y-%m-%d")(date);
-
-data.forEach(d => {
-    console.log(`Data date: ${d.date_value}`);
-});
+			.x(d => x(d.date))
+			.y(d => y(d.weekly_deaths));
 
 		svg.append("path")
 			.data([data])
 			.attr("class", "line")
 			.attr("d", line)
-			.style("fill", "steelblue")
+			.style("fill", "none")
 			.style("stroke", "steelblue")
 			.style("stroke-width", "2px");
-
-		// Add annotations to the chart
-		annotations.forEach(ann => {
-			console.log(parseDate(ann.date))
-			const dataPoint = data.find(d => formatDateString(d.date_value) === formatDateString(parseDate(ann.date)));
-			if (dataPoint) {
-			console.log("found data point")
-			const annotationX = x(parseDate(ann.date));
-			const annotationY = y(dataPoint["Cumulative Deaths"]) - 10;
-
-			svg.append("line")
-				.attr("x1", annotationX)
-				.attr("x2", annotationX)
-				.attr("y1", height)
-				.attr("y2", annotationY)
-				.attr("stroke", "black")
-				.attr("stroke-dasharray", "2,2");
-
-			svg.append("rect")
-				.attr("x", annotationX + 5)
-				.attr("y", annotationY - 40)
-				.attr("width", 225)
-				.attr("height", 60)
-				.attr("fill", "black")
-				.attr("opacity", 0.7);
-
-			svg.append("text")
-				.attr("x", annotationX + 10)
-				.attr("y", annotationY - 15)
-				.attr("text-anchor", "start")
-				.attr("class", "annotation")
-				.attr("fill", "white")
-				.text(ann.label)
-				.call(wrapText, 150); // Function to wrap text within the specified width
-			}
-			else
-			{
-				console.log("could not find it.")
-			}
-		});
-
-
-//		// Adding annotations using d3-annotation library
-//		const annotations = [
-//			{ note: { label: "Significant Drop", bgPadding: 5 }, x: x(parseDate("1/11/2020")), y: y(100000), dy: -30, dx: 0 },
-//			{ note: { label: "Peak", bgPadding: 5 }, x: x(parseDate("1/25/2022")), y: y(700000), dy: -30, dx: 0 },
-//		];
-//
-//		const makeAnnotations = d3.annotation()
-//			.annotations(annotations);
-//
-//		svg.append("g")
-//			.call(makeAnnotations);
-
-
-//		// Add a random annotation for each state using modulo
-//		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
-//		const randomDataPoint = stateData.values[randomIndex];
-//
-//		const annotationX = x(randomDataPoint.date_updated) + 55;
-//		const annotationY = y(randomDataPoint.new_deaths) - 55;
-//
-//		svg.append("line")
-//			.attr("x1", x(randomDataPoint.date_updated))
-//			.attr("x2", annotationX)
-//			.attr("y1", y(randomDataPoint.new_deaths))
-//			.attr("y2", annotationY)
-//			.attr("stroke", color(i))
-//			.attr("stroke-dasharray", "2,2");
-//
-//		svg.append("text")
-//			.attr("x", annotationX + 5)  // Adding extra space for clarity
-//			.attr("y", annotationY)
-//			.attr("text-anchor", "start")
-//			.attr("class", "legend")
-//			.style("fill", color(i))
-//			.text(stateData.key);
 	});
 }
 
@@ -577,29 +600,6 @@ async function createCasesWeeklyNortheastChart() {
 			.attr("d", line)
 			.attr("stroke", color(i));
 
-//		// Add a random annotation for each state using modulo
-//		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
-//		const randomDataPoint = stateData.values[randomIndex];
-//
-//		const annotationX = x(randomDataPoint.date_updated) + 55;
-//		const annotationY = y(randomDataPoint.new_deaths) - 55;
-//
-//		svg.append("line")
-//			.attr("x1", x(randomDataPoint.date_updated))
-//			.attr("x2", annotationX)
-//			.attr("y1", y(randomDataPoint.new_deaths))
-//			.attr("y2", annotationY)
-//			.attr("stroke", color(i))
-//			.attr("stroke-dasharray", "2,2");
-//
-//		svg.append("text")
-//			.attr("x", annotationX + 5)  // Adding extra space for clarity
-//			.attr("y", annotationY)
-//			.attr("text-anchor", "start")
-//			.attr("class", "legend")
-//			.style("fill", color(i))
-//			.text(stateData.key);
-//
 		// Legend
 		const legendRow = legend.append("g")
 				.attr("class", "legend-row")
@@ -618,6 +618,51 @@ async function createCasesWeeklyNortheastChart() {
 			.attr("y", 10)
 			.attr("class", "legend")
 			.text(stateData.key);
+	});
+
+
+	// Function to format dates as strings for comparison
+	const formatDateString = date => d3.timeFormat("%Y-%m-%d")(date);
+
+
+	// Add annotations to the chart
+	total_death_annotations.forEach(ann => {
+		console.log(parseDate(ann.date))
+		const dataPoint = data.find(d => formatDateString(d.date_value) === formatDateString(parseDate(ann.date)));
+		if (dataPoint) {
+		console.log("found data point")
+		const annotationX = x(parseDate(ann.date));
+		const annotationY = y(dataPoint["Cumulative Deaths"]) - 10;
+
+		svg.append("line")
+			.attr("x1", annotationX)
+			.attr("x2", annotationX)
+			.attr("y1", height)
+			.attr("y2", annotationY)
+			.attr("stroke", "black")
+			.attr("stroke-dasharray", "2,2");
+
+		svg.append("rect")
+			.attr("x", annotationX + 5)
+			.attr("y", annotationY - 40)
+			.attr("width", 225)
+			.attr("height", 60)
+			.attr("fill", "black")
+			.attr("opacity", 0.7);
+
+		svg.append("text")
+			.attr("x", annotationX + 10)
+			.attr("y", annotationY - 15)
+			.attr("text-anchor", "start")
+			.attr("class", "annotation")
+			.attr("fill", "white")
+			.text(ann.label)
+			.call(wrapText, 150);
+		}
+		else
+		{
+			console.log("could not find it.")
+		}
 	});
 
 	// Add axis labels

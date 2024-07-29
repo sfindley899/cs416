@@ -162,6 +162,16 @@
             cursor: pointer;
         }
 
+	   .annotation-line {
+		   stroke: black;
+		   stroke-dasharray: 4, 4;
+	   }
+
+	   .annotation-text {
+		   font-weight: bold;
+		   fill: black;
+	   }
+
         .tooltip .tooltiptext {
             visibility: hidden;
             width: 120px;
@@ -210,23 +220,12 @@
 				<h3>Let’s explore the data to understand this, starting with the cumulative deaths.</h3>
 		   </div>
         </div>
-        <div class="section" style="background-color: #6e6e6e;">
-            <div class="content-block">
-				<h1>Cumulative Death Count</h1>
-            </div>
-        </div>
-
         <div class="section" style="background-color: #4e4e4e;">
             <div class="content-block">
                 <h3>While the rate of COVID-19 deaths has slowed over time, the rising cumulative death count tells a different story.</h3>
 				<div class="chart" id="total-deaths-chart"></div>
 				<h3>The rising number of cases underscores the persistent spread of COVID-19, despite decreasing mortality rates over time.</h3>
 				<script>totalDeathsD3Chart()</script>
-            </div>
-        </div>
-        <div class="section" style="background-color: #6e6e6e;">
-            <div class="content-block">
-				<h1>Weekly Deaths and Cases</h1>
             </div>
         </div>
         <div class="section" style="background-color: #3e3e3e;">
