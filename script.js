@@ -1,3 +1,32 @@
+// Define the major dates and corresponding counts for annotations
+const annotations = [
+//{ date: "1/25/2020", count: null, label: "January 2020:\nFirst COVID-19 case in the US" },
+//{ date: "2/1/2020", count: null, label: "January 2020:\nPublic health emergency declared" },
+{ date: "3/14/2020", count: null, label: "March 2020:\nNational emergency declared" },
+//{ date: "4/3/2020", count: null, label: "April 2020:\nCDC recommends masks" },
+//{ date: "12/12/2020", count: null, label: "December 2020:\nFirst vaccine authorized" },
+//{ date: "1/23/2021", count: null, label: "January 2021:\nNew administration's pandemic response" },
+{ date: "3/13/2021", count: null, label: "March 2021:\nAmerican Rescue Plan signed" },
+{ date: "1/15/2022", count: null, label: "February 2022:\nCDC updates mask guidance" },
+//{ date: "7/24/2021", count: null, label: "July 2021:\nCDC updates mask guidance" },
+//{ date: "11/6/2021", count: null, label: "November 2021:\nVaccines for children approved" },
+{ date: "5/13/2023", count: null, label: "May 2023:\nPublic health emergency ends" }
+];
+
+const annotations_x = [
+{ date: "1/25/2020", count: null, label: "January 2020:\nFirst COVID-19 case in the US" },
+{ date: "2/1/2020", count: null, label: "January 2020:\nPublic health emergency declared" },
+{ date: "3/14/2020", count: null, label: "March 2020:\nNational emergency declared" },
+{ date: "4/3/2020", count: null, label: "April 2020:\nCDC recommends masks" },
+{ date: "12/12/2020", count: null, label: "December 2020:\nFirst vaccine authorized" },
+{ date: "1/23/2021", count: null, label: "January 2021:\nNew administration's pandemic response" },
+{ date: "3/13/2021", count: null, label: "March 2021:\nAmerican Rescue Plan signed" },
+{ date: "7/24/2021", count: null, label: "July 2021:\nCDC updates mask guidance" },
+{ date: "11/6/2021", count: null, label: "November 2021:\nVaccines for children approved" },
+{ date: "5/13/2023", count: null, label: "May 2023:\nPublic health emergency ends" }
+];
+
+
 const body = document.body;
 const html = document.documentElement;
 const height = Math.max(
@@ -13,6 +42,32 @@ var monthly_gender_dates_csv = "gender_monthly_dates.csv";
 var weekly_regional_cases_deaths_csv = "weekly_cases_and_deaths_per_state_region.csv";
 var cumulative_deaths_csv = "cumulative_deaths_us.csv";
 var weekly_deaths_csv = "data_table_for_weekly_deaths__the_united_states.csv";
+
+// Function to wrap text within a specified width
+function wrapText(text, width) {
+    text.each(function() {
+        const text = d3.select(this),
+            words = text.text().split("\n").reverse(),
+            lineHeight = 1.1; // ems
+        let line = [],
+            lineNumber = 0,
+            y = text.attr("y"),
+            dy = parseFloat(text.attr("dy") || 0),
+            tspan = text.text(null).append("tspan").attr("x", text.attr("x")).attr("y", y).attr("dy", dy + "em");
+
+        while (words.length) {
+            const word = words.pop();
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan").attr("x", text.attr("x")).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+            }
+        }
+    });
+}
 
 function initializeSlider(data) {
 	const parseDate = d3.timeParse("%m/%d/%Y");
@@ -347,6 +402,13 @@ async function createCumulativeDeathsChart() {
 			.x(d => x(d.date_value))
 			.y(d => y(d["Cumulative Deaths"]));
 
+			// Function to format dates as strings for comparison
+			const formatDateString = date => d3.timeFormat("%Y-%m-%d")(date);
+
+data.forEach(d => {
+    console.log(`Data date: ${d.date_value}`);
+});
+
 		svg.append("path")
 			.data([data])
 			.attr("class", "line")
@@ -355,17 +417,82 @@ async function createCumulativeDeathsChart() {
 			.style("stroke", "steelblue")
 			.style("stroke-width", "2px");
 
-		// Adding annotations using d3-annotation library
-		const annotations = [
-			{ note: { label: "Significant Drop", bgPadding: 5 }, x: x(parseDate("1/11/2020")), y: y(100000), dy: -30, dx: 0 },
-			{ note: { label: "Peak", bgPadding: 5 }, x: x(parseDate("1/25/2022")), y: y(700000), dy: -30, dx: 0 },
-		];
+		// Add annotations to the chart
+		annotations.forEach(ann => {
+			console.log(parseDate(ann.date))
+			const dataPoint = data.find(d => formatDateString(d.date_value) === formatDateString(parseDate(ann.date)));
+			if (dataPoint) {
+			console.log("found data point")
+			const annotationX = x(parseDate(ann.date));
+			const annotationY = y(dataPoint["Cumulative Deaths"]) - 10;
 
-		const makeAnnotations = d3.annotation()
-			.annotations(annotations);
+			svg.append("line")
+				.attr("x1", annotationX)
+				.attr("x2", annotationX)
+				.attr("y1", height)
+				.attr("y2", annotationY)
+				.attr("stroke", "black")
+				.attr("stroke-dasharray", "2,2");
 
-		svg.append("g")
-			.call(makeAnnotations);
+			svg.append("rect")
+				.attr("x", annotationX + 5)
+				.attr("y", annotationY - 40)
+				.attr("width", 225)
+				.attr("height", 60)
+				.attr("fill", "black")
+				.attr("opacity", 0.7);
+
+			svg.append("text")
+				.attr("x", annotationX + 10)
+				.attr("y", annotationY - 15)
+				.attr("text-anchor", "start")
+				.attr("class", "annotation")
+				.attr("fill", "white")
+				.text(ann.label)
+				.call(wrapText, 150); // Function to wrap text within the specified width
+			}
+			else
+			{
+				console.log("could not find it.")
+			}
+		});
+
+
+//		// Adding annotations using d3-annotation library
+//		const annotations = [
+//			{ note: { label: "Significant Drop", bgPadding: 5 }, x: x(parseDate("1/11/2020")), y: y(100000), dy: -30, dx: 0 },
+//			{ note: { label: "Peak", bgPadding: 5 }, x: x(parseDate("1/25/2022")), y: y(700000), dy: -30, dx: 0 },
+//		];
+//
+//		const makeAnnotations = d3.annotation()
+//			.annotations(annotations);
+//
+//		svg.append("g")
+//			.call(makeAnnotations);
+
+
+//		// Add a random annotation for each state using modulo
+//		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
+//		const randomDataPoint = stateData.values[randomIndex];
+//
+//		const annotationX = x(randomDataPoint.date_updated) + 55;
+//		const annotationY = y(randomDataPoint.new_deaths) - 55;
+//
+//		svg.append("line")
+//			.attr("x1", x(randomDataPoint.date_updated))
+//			.attr("x2", annotationX)
+//			.attr("y1", y(randomDataPoint.new_deaths))
+//			.attr("y2", annotationY)
+//			.attr("stroke", color(i))
+//			.attr("stroke-dasharray", "2,2");
+//
+//		svg.append("text")
+//			.attr("x", annotationX + 5)  // Adding extra space for clarity
+//			.attr("y", annotationY)
+//			.attr("text-anchor", "start")
+//			.attr("class", "legend")
+//			.style("fill", color(i))
+//			.text(stateData.key);
 	});
 }
 
