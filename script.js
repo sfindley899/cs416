@@ -14,11 +14,6 @@ var weekly_regional_cases_deaths_csv = "weekly_cases_and_deaths_per_state_region
 var cumulative_deaths_csv = "cumulative_deaths_us.csv";
 var weekly_deaths_csv = "data_table_for_weekly_deaths__the_united_states.csv";
 
-// Test
-function pageLoadTest()
-{
-	alert("Page has been loaded!");
-}        
 function initializeSlider(data) {
 	const parseDate = d3.timeParse("%m/%d/%Y");
 	const formatDate = d3.timeFormat("%m/%d/%Y");
@@ -127,13 +122,13 @@ async function createDeathsWeeklyChart() {
 	const y = d3.scaleLinear().range([height, 0]);
 
 	const svg = d3.select("#deaths-chart").append("svg")
-		.attr("width", '100%')
+		.attr("width", '90%')
 		.attr("height", '100%')
 		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
 		.attr("preserveAspectRatio", "xMidYMid meet")
 		.append("g")
 		.attr("transform",
-			"translate(" + margin.left + "," + margin.top + ")");
+			"translate(" + (margin.left + 20) + "," + margin.top + ")");
 
 	initCovidWeeklyDeathData().then(data => {
 		data.forEach(d => {
@@ -153,6 +148,7 @@ async function createDeathsWeeklyChart() {
 
 		// X Axis label
 		svg.append("text")
+		    .attr("class", "axis-label")
 			.attr("text-anchor", "end")
 			.attr("x", width / 2 + margin.left)
 			.attr("y", height + margin.top + 40)
@@ -160,11 +156,12 @@ async function createDeathsWeeklyChart() {
 
 		// Y Axis label
 		svg.append("text")
+			.attr("class", "axis-label")
 			.attr("text-anchor", "end")
 			.attr("transform", "rotate(-90)")
 			.attr("y", -margin.left + 20)
-			.attr("x", -height / 2 + margin.top)
-			.text("New Cases");
+			.attr("x", -height / 3)
+			.text("New Deaths per Week");
 
 		const area = d3.area()
 			.x(d => x(d.date))
@@ -185,7 +182,7 @@ async function createDeathsWeeklyChart() {
 			.attr("class", "line")
 			.attr("d", line)
 			.style("fill", "none")
-			.style("stroke", "red")
+			.style("stroke", "steelblue")
 			.style("stroke-width", "2px");
 	});
 }
@@ -202,13 +199,13 @@ async function createCasesWeeklyChart() {
 	const y = d3.scaleLinear().range([height, 0]);
 
 	const svg = d3.select("#cases-chart").append("svg")
-		.attr("width", '100%')
+		.attr("width", '90%')
 		.attr("height", '100%')
 		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
 		.attr("preserveAspectRatio", "xMidYMid meet")
 		.append("g")
 		.attr("transform",
-			"translate(" + margin.left + "," + margin.top + ")");
+			"translate(" + (margin.left + 30) + "," + margin.top + ")");
 
      initCovidRegionalData().then(data => {
 		data.forEach(d => {
@@ -235,6 +232,7 @@ async function createCasesWeeklyChart() {
 
 		// X Axis label
 		svg.append("text")
+		    .attr("class", "axis-label")
 			.attr("text-anchor", "end")
 			.attr("x", width / 2 + margin.left)
 			.attr("y", height + margin.top + 40)
@@ -242,11 +240,12 @@ async function createCasesWeeklyChart() {
 
 		// Y Axis label
 		svg.append("text")
+		    .attr("class", "axis-label")
 			.attr("text-anchor", "end")
 			.attr("transform", "rotate(-90)")
-			.attr("y", -margin.left + 20)
-			.attr("x", -height / 2 + margin.top)
-			.text("New Cases");
+			.attr("y", -margin.left)
+			.attr("x", -height / 3)
+			.text("New Cases per Week");
 
 		const area = d3.area()
 			.x(d => x(d.date))
@@ -292,12 +291,12 @@ async function createCumulativeDeathsChart() {
 	const y = d3.scaleLinear().range([height, 0]);
 
 	const svg = d3.select("#total-deaths-chart").append("svg")
-		.attr("width", '100%')
+		.attr("width", '90%')
 		.attr("height", '100%')
 		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
 		.attr("preserveAspectRatio", "xMidYMid meet")
 		.append("g")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		.attr("transform", "translate(" + (margin.left + 20)+ "," + margin.top + ")");
 
 	initCovidTotalDeathData().then(data => {
 		data.forEach(d => {
@@ -317,6 +316,7 @@ async function createCumulativeDeathsChart() {
 
 		// X Axis label
 		svg.append("text")
+			.attr("class", "axis-label")
 			.attr("text-anchor", "end")
 			.attr("x", width / 2 + margin.left)
 			.attr("y", height + margin.top + 40)
@@ -324,11 +324,12 @@ async function createCumulativeDeathsChart() {
 
 		// Y Axis label
 		svg.append("text")
+		    .attr("class", "axis-label")
 			.attr("text-anchor", "end")
 			.attr("transform", "rotate(-90)")
-			.attr("y", -margin.left + 20)
-			.attr("x", -height / 2 + margin.top)
-			.text("New Cases");
+			.attr("y", -margin.left)
+			.attr("x", -height / 3)
+			.text("New Deaths per Week");
 
 		const area = d3.area()
 			.x(d => x(d.date_value))
@@ -349,7 +350,7 @@ async function createCumulativeDeathsChart() {
 			.data([data])
 			.attr("class", "line")
 			.attr("d", line)
-			.style("fill", "none")
+			.style("fill", "steelblue")
 			.style("stroke", "steelblue")
 			.style("stroke-width", "2px");
 
@@ -378,7 +379,7 @@ async function createCasesWeeklyNortheastChart() {
 	const y = d3.scaleLinear().range([height, 0]);
 
 	const svg = d3.select("#cases-chart-northeast").append("svg")
-		.attr("width", '100%')
+		.attr("width", '90%')
 		.attr("height", '100%')
 		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
 		.attr("preserveAspectRatio", "xMidYMid meet")
@@ -393,7 +394,7 @@ async function createCasesWeeklyNortheastChart() {
 	// Parse dates and convert new cases to numbers
 	filteredData.forEach(d => {
 		d.date_updated = parseDate(d.date_updated);
-		d.new_cases = +d.new_cases;
+		d.new_deaths = +d.new_deaths;
 	});
 
 	// Group data by state
@@ -402,7 +403,7 @@ async function createCasesWeeklyNortheastChart() {
 		.entries(filteredData);
 
 	x.domain(d3.extent(filteredData, d => d.date_updated));
-	y.domain([0, d3.max(filteredData, d => d.new_cases)]);
+	y.domain([0, d3.max(filteredData, d => d.new_deaths)]);
 
 	svg.append("g")
 		.attr("transform", "translate(0," + height + ")")
@@ -417,7 +418,7 @@ async function createCasesWeeklyNortheastChart() {
 	// Create legend
 	const legend = svg.append("g")
 	    .attr("class", "legend-container")
-		.attr("transform", `translate(${width + margin.right - 200}, ${0})`);
+		.attr("transform", `translate(${width + margin.right - 200}, ${-20})`);
 
 	// Add background and border for legend
 	const legendWidth = 150;
@@ -440,7 +441,7 @@ async function createCasesWeeklyNortheastChart() {
 	groupedData.forEach((stateData, i) => {
 		const line = d3.line()
 			.x(d => x(d.date_updated))
-			.y(d => y(d.new_cases));
+			.y(d => y(d.new_deaths));
 
 		svg.append("path")
 			.datum(stateData.values)
@@ -453,12 +454,12 @@ async function createCasesWeeklyNortheastChart() {
 //		const randomDataPoint = stateData.values[randomIndex];
 //
 //		const annotationX = x(randomDataPoint.date_updated) + 55;
-//		const annotationY = y(randomDataPoint.new_cases) - 55;
+//		const annotationY = y(randomDataPoint.new_deaths) - 55;
 //
 //		svg.append("line")
 //			.attr("x1", x(randomDataPoint.date_updated))
 //			.attr("x2", annotationX)
-//			.attr("y1", y(randomDataPoint.new_cases))
+//			.attr("y1", y(randomDataPoint.new_deaths))
 //			.attr("y2", annotationY)
 //			.attr("stroke", color(i))
 //			.attr("stroke-dasharray", "2,2");
@@ -493,17 +494,19 @@ async function createCasesWeeklyNortheastChart() {
 
 	// Add axis labels
 	svg.append("text")
+		.attr("class", "axis-label")
 		.attr("text-anchor", "end")
 		.attr("x", width / 2 + margin.left)
 		.attr("y", height + margin.top + 40)
 		.text("Date");
 
 	svg.append("text")
+		.attr("class", "axis-label")
 		.attr("text-anchor", "end")
 		.attr("transform", "rotate(-90)")
 		.attr("y", -margin.left + 20)
-		.attr("x", -height / 2 + margin.top)
-		.text("New Cases");
+		.attr("x", -height / 3)
+		.text("New Deaths per Week");
 
 	});
 }
@@ -538,7 +541,7 @@ async function createCasesWeeklySouthChart() {
 	// Parse dates and convert new cases to numbers
 	filteredData.forEach(d => {
 		d.date_updated = parseDate(d.date_updated);
-		d.new_cases = +d.new_cases;
+		d.new_deaths = +d.new_deaths;
 	});
 
 	// Group data by state
@@ -547,7 +550,7 @@ async function createCasesWeeklySouthChart() {
 		.entries(filteredData);
 
 	x.domain(d3.extent(filteredData, d => d.date_updated));
-	y.domain([0, d3.max(filteredData, d => d.new_cases)]);
+	y.domain([0, d3.max(filteredData, d => d.new_deaths)]);
 
 	svg.append("g")
 		.attr("transform", "translate(0," + height + ")")
@@ -585,7 +588,7 @@ async function createCasesWeeklySouthChart() {
 	groupedData.forEach((stateData, i) => {
 		const line = d3.line()
 			.x(d => x(d.date_updated))
-			.y(d => y(d.new_cases));
+			.y(d => y(d.new_deaths));
 
 		svg.append("path")
 			.datum(stateData.values)
@@ -598,12 +601,12 @@ async function createCasesWeeklySouthChart() {
 //		const randomDataPoint = stateData.values[randomIndex];
 //
 //		const annotationX = x(randomDataPoint.date_updated) - 35;
-//		const annotationY = y(randomDataPoint.new_cases) - 55;
+//		const annotationY = y(randomDataPoint.new_deaths) - 55;
 //
 //		svg.append("line")
 //			.attr("x1", x(randomDataPoint.date_updated))
 //			.attr("x2", annotationX)
-//			.attr("y1", y(randomDataPoint.new_cases))
+//			.attr("y1", y(randomDataPoint.new_deaths))
 //			.attr("y2", annotationY)
 //			.attr("stroke", color(i))
 //			.attr("stroke-dasharray", "2,2");
@@ -637,17 +640,19 @@ async function createCasesWeeklySouthChart() {
 
 	// Add axis labels
 	svg.append("text")
+		.attr("class", "axis-label")
 		.attr("text-anchor", "end")
 		.attr("x", width / 2 + margin.left + 30)
 		.attr("y", height + margin.top + 30)
 		.text("Date");
 
 	svg.append("text")
+		.attr("class", "axis-label")
 		.attr("text-anchor", "end")
 		.attr("transform", "rotate(-90)")
 		.attr("y", -50)
-		.attr("x", -height / 2 + margin.top)
-		.text("New Cases");
+		.attr("x", -height / 3)
+		.text("New Deaths per Week");
 
 	});
 }
@@ -663,7 +668,7 @@ async function createCasesWeeklyMidwestChart() {
 	const y = d3.scaleLinear().range([height, 0]);
 
 	const svg = d3.select("#cases-chart-midwest").append("svg")
-		.attr("width", '100%')
+		.attr("width", '90%')
 		.attr("height", '100%')
 		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
 		.attr("preserveAspectRatio", "xMidYMid meet")
@@ -678,7 +683,7 @@ async function createCasesWeeklyMidwestChart() {
 	// Parse dates and convert new cases to numbers
 	filteredData.forEach(d => {
 		d.date_updated = parseDate(d.date_updated);
-		d.new_cases = +d.new_cases;
+		d.new_deaths = +d.new_deaths;
 	});
 
 	// Group data by state
@@ -687,7 +692,7 @@ async function createCasesWeeklyMidwestChart() {
 		.entries(filteredData);
 
 	x.domain(d3.extent(filteredData, d => d.date_updated));
-	y.domain([0, d3.max(filteredData, d => d.new_cases)]);
+	y.domain([0, d3.max(filteredData, d => d.new_deaths)]);
 
 	svg.append("g")
 		.attr("transform", "translate(0," + height + ")")
@@ -702,7 +707,7 @@ async function createCasesWeeklyMidwestChart() {
 	// Create legend
 	const legend = svg.append("g")
 	    .attr("class", "legend-container")
-		.attr("transform", `translate(${width + margin.right - 200}, ${0})`);
+		.attr("transform", `translate(${width + margin.right - 200}, ${-30})`);
 
 	// Add background and border for legend
 	const legendWidth = 150;
@@ -725,7 +730,7 @@ async function createCasesWeeklyMidwestChart() {
 	groupedData.forEach((stateData, i) => {
 		const line = d3.line()
 			.x(d => x(d.date_updated))
-			.y(d => y(d.new_cases));
+			.y(d => y(d.new_deaths));
 
 		svg.append("path")
 			.datum(stateData.values)
@@ -738,12 +743,12 @@ async function createCasesWeeklyMidwestChart() {
 //		const randomDataPoint = stateData.values[randomIndex];
 //
 //		const annotationX = x(randomDataPoint.date_updated) + 55;
-//		const annotationY = y(randomDataPoint.new_cases) - 55;
+//		const annotationY = y(randomDataPoint.new_deaths) - 55;
 //
 //		svg.append("line")
 //			.attr("x1", x(randomDataPoint.date_updated))
 //			.attr("x2", annotationX)
-//			.attr("y1", y(randomDataPoint.new_cases))
+//			.attr("y1", y(randomDataPoint.new_deaths))
 //			.attr("y2", annotationY)
 //			.attr("stroke", color(i))
 //			.attr("stroke-dasharray", "2,2");
@@ -778,17 +783,19 @@ async function createCasesWeeklyMidwestChart() {
 
 	// Add axis labels
 	svg.append("text")
+	    .attr("class", "axis-label")
 		.attr("text-anchor", "end")
 		.attr("x", width / 2 + margin.left)
 		.attr("y", height + margin.top + 40)
 		.text("Date");
 
 	svg.append("text")
+	    .attr("class", "axis-label")
 		.attr("text-anchor", "end")
 		.attr("transform", "rotate(-90)")
 		.attr("y", -margin.left + 20)
-		.attr("x", -height / 2 + margin.top)
-		.text("New Cases");
+		.attr("x", -height / 3)
+		.text("New Deaths per Week");
 
 	});
 }
@@ -804,7 +811,7 @@ async function createCasesWeeklyWestChart() {
 	const y = d3.scaleLinear().range([height, 0]);
 
 	const svg = d3.select("#cases-chart-west").append("svg")
-		.attr("width", '100%')
+		.attr("width", '90%')
 		.attr("height", '100%')
 		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
 		.attr("preserveAspectRatio", "xMidYMid meet")
@@ -819,7 +826,7 @@ async function createCasesWeeklyWestChart() {
 	// Parse dates and convert new cases to numbers
 	filteredData.forEach(d => {
 		d.date_updated = parseDate(d.date_updated);
-		d.new_cases = +d.new_cases;
+		d.new_deaths = +d.new_deaths;
 	});
 
 	// Group data by state
@@ -828,7 +835,7 @@ async function createCasesWeeklyWestChart() {
 		.entries(filteredData);
 
 	x.domain(d3.extent(filteredData, d => d.date_updated));
-	y.domain([0, d3.max(filteredData, d => d.new_cases)]);
+	y.domain([0, d3.max(filteredData, d => d.new_deaths)]);
 
 	svg.append("g")
 		.attr("transform", "translate(0," + height + ")")
@@ -843,7 +850,7 @@ async function createCasesWeeklyWestChart() {
 	// Create legend
 	const legend = svg.append("g")
 		.attr("class", "legend-container")
-		.attr("transform", `translate(${width + margin.right - 200}, ${0})`);
+		.attr("transform", `translate(${width + margin.right - 200}, ${-30})`);
 
 	// Add background and border for legend
 	const legendWidth = 150;
@@ -866,7 +873,7 @@ async function createCasesWeeklyWestChart() {
 	groupedData.forEach((stateData, i) => {
 		const line = d3.line()
 			.x(d => x(d.date_updated))
-			.y(d => y(d.new_cases));
+			.y(d => y(d.new_deaths));
 
 		svg.append("path")
 			.datum(stateData.values)
@@ -879,12 +886,12 @@ async function createCasesWeeklyWestChart() {
 //		const randomDataPoint = stateData.values[randomIndex];
 //
 //		const annotationX = x(randomDataPoint.date_updated) + 55;
-//		const annotationY = y(randomDataPoint.new_cases) - 55;
+//		const annotationY = y(randomDataPoint.new_deaths) - 55;
 //
 //		svg.append("line")
 //			.attr("x1", x(randomDataPoint.date_updated))
 //			.attr("x2", annotationX)
-//			.attr("y1", y(randomDataPoint.new_cases))
+//			.attr("y1", y(randomDataPoint.new_deaths))
 //			.attr("y2", annotationY)
 //			.attr("stroke", color(i))
 //			.attr("stroke-dasharray", "2,2");
@@ -918,17 +925,19 @@ async function createCasesWeeklyWestChart() {
 
 	// Add axis labels
 	svg.append("text")
+	    .attr("class", "axis-label")
 		.attr("text-anchor", "end")
 		.attr("x", width / 2 + margin.left)
 		.attr("y", height + margin.top + 40)
 		.text("Date");
 
 	svg.append("text")
+	    .attr("class", "axis-label")
 		.attr("text-anchor", "end")
 		.attr("transform", "rotate(-90)")
 		.attr("y", -margin.left + 20)
-		.attr("x", -height / 2 + margin.top)
-		.text("New Cases");
+		.attr("x", -height / 3)
+		.text("New Deaths per Week");
 
 	});
 }
@@ -957,7 +966,7 @@ function updateRegionalChart(data, selectedStates, startDate, endDate) {
 	d3.select("#interactive-chart").selectAll("*").remove();
 
 	const svg = d3.select("#interactive-chart").append("svg")
-		.attr("width", '100%')
+		.attr("width", '90%')
 		.attr("height", '100%')
 		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
 		.attr("preserveAspectRatio", "xMidYMid meet")
@@ -976,7 +985,7 @@ function updateRegionalChart(data, selectedStates, startDate, endDate) {
 	// Parse dates and convert new cases to numbers
 	filteredData.forEach(d => {
 		d.date_updated = parseDate(d.date_updated);
-		d.new_cases = +d.new_cases;
+		d.new_deaths = +d.new_deaths;
 	});
 
 	// Group data by state
@@ -985,7 +994,7 @@ function updateRegionalChart(data, selectedStates, startDate, endDate) {
 		.entries(filteredData);
 
 	x.domain(d3.extent(filteredData, d => d.date_updated));
-	y.domain([0, d3.max(filteredData, d => d.new_cases)]);
+	y.domain([0, d3.max(filteredData, d => d.new_deaths)]);
 
 	svg.append("g")
 		.attr("transform", "translate(0," + height + ")")
@@ -1001,7 +1010,7 @@ function updateRegionalChart(data, selectedStates, startDate, endDate) {
 	groupedData.forEach((stateData, i) => {
 		const line = d3.line()
 			.x(d => x(d.date_updated))
-			.y(d => y(d.new_cases));
+			.y(d => y(d.new_deaths));
 
 		svg.append("path")
 			.datum(stateData.values)
@@ -1014,20 +1023,20 @@ function updateRegionalChart(data, selectedStates, startDate, endDate) {
 //		const randomDataPoint = stateData.values[randomIndex];
 //
 //		const annotationX = x(randomDataPoint.date_updated) + 55;
-//		const annotationY = y(randomDataPoint.new_cases) - 55;
-//		const randomYOffset = Math.random() * (height - y(randomDataPoint.new_cases) - 20);
+//		const annotationY = y(randomDataPoint.new_deaths) - 55;
+//		const randomYOffset = Math.random() * (height - y(randomDataPoint.new_deaths) - 20);
 //
 //		svg.append("line")
 //			.attr("x1", x(randomDataPoint.date_updated))
 //			.attr("x2", annotationX)
-//			.attr("y1", y(randomDataPoint.new_cases))
-//			.attr("y2", y(randomDataPoint.new_cases) + randomYOffset)
+//			.attr("y1", y(randomDataPoint.new_deaths))
+//			.attr("y2", y(randomDataPoint.new_deaths) + randomYOffset)
 //			.attr("stroke", color(i))
 //			.attr("stroke-dasharray", "2,2");
 //
 //		svg.append("text")
 //			.attr("x", annotationX + 5)  // Adding extra space for clarity
-//			.attr("y", y(randomDataPoint.new_cases) + randomYOffset)
+//			.attr("y", y(randomDataPoint.new_deaths) + randomYOffset)
 //			.attr("text-anchor", "start")
 //			.attr("class", "legend")
 //			.style("fill", color(i))
@@ -1036,17 +1045,19 @@ function updateRegionalChart(data, selectedStates, startDate, endDate) {
 
 	// Add axis labels
 	svg.append("text")
+	    .attr("class", "axis-label")
 		.attr("text-anchor", "end")
 		.attr("x", width / 2 + margin.left)
 		.attr("y", height + margin.top + 40)
 		.text("Date");
 
 	svg.append("text")
+	    .attr("class", "axis-label")
 		.attr("text-anchor", "end")
 		.attr("transform", "rotate(-90)")
 		.attr("y", -margin.left + 20)
-		.attr("x", -height / 2 + margin.top)
-		.text("New Cases");
+		.attr("x", -height / 3)
+		.text("New Deaths per Week");
 
 	// Create legend
 	const legend = svg.append("g")
@@ -1076,7 +1087,7 @@ function updateRegionalChart(data, selectedStates, startDate, endDate) {
 	groupedData.forEach((stateData, i) => {
 		const line = d3.line()
 			.x(d => x(d.date_updated))
-			.y(d => y(d.new_cases));
+			.y(d => y(d.new_deaths));
 
 		svg.append("path")
 			.datum(stateData.values)
@@ -1089,12 +1100,12 @@ function updateRegionalChart(data, selectedStates, startDate, endDate) {
 		const randomDataPoint = stateData.values[randomIndex];
 
 		const annotationX = x(randomDataPoint.date_updated) + 55;
-		const annotationY = y(randomDataPoint.new_cases) - 55;
+		const annotationY = y(randomDataPoint.new_deaths) - 55;
 
 		svg.append("line")
 			.attr("x1", x(randomDataPoint.date_updated))
 			.attr("x2", annotationX)
-			.attr("y1", y(randomDataPoint.new_cases))
+			.attr("y1", y(randomDataPoint.new_deaths))
 			.attr("y2", annotationY)
 			.attr("stroke", color(i))
 			.attr("stroke-dasharray", "2,2");
@@ -1139,7 +1150,7 @@ async function initializeRegionalChart(data) {
 	const y = d3.scaleLinear().range([height, 0]);
 
 	const svg = d3.select("#interactive-chart").append("svg")
-		.attr("width", '100%')
+		.attr("width", '90%')
 		.attr("height", '100%')
 		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
 		.attr("preserveAspectRatio", "xMidYMid meet")
@@ -1149,7 +1160,7 @@ async function initializeRegionalChart(data) {
 	// Parse dates and convert new cases to numbers
 	data.forEach(d => {
 		d.date_updated = parseDate(d.date_updated);
-		d.new_cases = +d.new_cases;
+		d.new_deaths = +d.new_deaths;
 	});
 
 	// Group data by state
@@ -1158,7 +1169,7 @@ async function initializeRegionalChart(data) {
 		.entries(data);
 
 	x.domain(d3.extent(data, d => d.date_updated));
-	y.domain([0, d3.max(data, d => d.new_cases)]);
+	y.domain([0, d3.max(data, d => d.new_deaths)]);
 
 	svg.append("g")
 		.attr("transform", "translate(0," + height + ")")
@@ -1174,7 +1185,7 @@ async function initializeRegionalChart(data) {
 	groupedData.forEach((stateData, i) => {
 		const line = d3.line()
 			.x(d => x(d.date_updated))
-			.y(d => y(d.new_cases));
+			.y(d => y(d.new_deaths));
 
 		svg.append("path")
 			.datum(stateData.values)
@@ -1185,17 +1196,19 @@ async function initializeRegionalChart(data) {
 
 	// Add axis labels
 	svg.append("text")
+	    .attr("class", "axis-label")
 		.attr("text-anchor", "end")
 		.attr("x", width / 2 + margin.left)
 		.attr("y", height + margin.top + 40)
 		.text("Date");
 
 	svg.append("text")
+	    .attr("class", "axis-label")
 		.attr("text-anchor", "end")
 		.attr("transform", "rotate(-90)")
 		.attr("y", -margin.left + 20)
-		.attr("x", -height / 2 + margin.top)
-		.text("New Cases");
+		.attr("x", -height / 3)
+		.text("New Deaths per Week");
 
 	// Create legend
 	const legend = svg.append("g")
@@ -1225,7 +1238,7 @@ async function initializeRegionalChart(data) {
 	groupedData.forEach((stateData, i) => {
 		const line = d3.line()
 			.x(d => x(d.date_updated))
-			.y(d => y(d.new_cases));
+			.y(d => y(d.new_deaths));
 
 		svg.append("path")
 			.datum(stateData.values)
@@ -1244,12 +1257,12 @@ async function initializeRegionalChart(data) {
 		const randomDataPoint = stateData.values[randomIndex];
 
 		const annotationX = x(randomDataPoint.date_updated) + 55;
-		const annotationY = y(randomDataPoint.new_cases) - 55;
+		const annotationY = y(randomDataPoint.new_deaths) - 55;
 
 		svg.append("line")
 			.attr("x1", x(randomDataPoint.date_updated))
 			.attr("x2", annotationX)
-			.attr("y1", y(randomDataPoint.new_cases))
+			.attr("y1", y(randomDataPoint.new_deaths))
 			.attr("y2", annotationY)
 			.attr("stroke", color(i))
 			.attr("stroke-dasharray", "2,2");

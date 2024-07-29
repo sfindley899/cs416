@@ -77,7 +77,10 @@
             color: #d3d3d3;
 			max-height: 85vh;
         }
-		
+		strong {
+		    color: #d3d3d3;
+
+		}
 		#state-select {
 		}
 
@@ -135,6 +138,10 @@
 			margin: 10px 0;
 		}
 
+		.area {
+			fill: steelblue;
+		}
+
         .image-container img {
             max-width: 100%;
             height: auto;
@@ -144,6 +151,11 @@
 			margin-left: auto;
 			margin-right: auto;
 		}
+		.axis-label {
+		font-size: 14px;
+		font-weight: bold;
+		fill: #FFFFFF;
+	}
     </style>
 </head>
 <body onload="pageLoadTest()">
@@ -162,7 +174,7 @@
         </div>
         <div class="section" style="background-color: #3e3e3e;">
             <div class="content-block">
-                <h3>Imagine <strong>800,000 people</strong>, the population with the city San Francisco suddenly disappearing.</h3>
+                <h3>Imagine <strong >800,000 people</strong>, the population with the city San Francisco suddenly disappearing.</h3>
 				<div class="image-container" class="center">
 					<img src="golden_gate.jpg" alt="Golden Gate Bridge">
 				</div>
