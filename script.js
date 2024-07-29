@@ -416,6 +416,7 @@ async function createCasesWeeklyNortheastChart() {
 
 	// Create legend
 	const legend = svg.append("g")
+	    .attr("class", "legend-container")
 		.attr("transform", `translate(${width + margin.right - 200}, ${0})`);
 
 	// Add background and border for legend
@@ -447,32 +448,33 @@ async function createCasesWeeklyNortheastChart() {
 			.attr("d", line)
 			.attr("stroke", color(i));
 
-		// Add a random annotation for each state using modulo
-		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
-		const randomDataPoint = stateData.values[randomIndex];
-
-		const annotationX = x(randomDataPoint.date_updated) + 55;
-		const annotationY = y(randomDataPoint.new_cases) - 55;
-
-		svg.append("line")
-			.attr("x1", x(randomDataPoint.date_updated))
-			.attr("x2", annotationX)
-			.attr("y1", y(randomDataPoint.new_cases))
-			.attr("y2", annotationY)
-			.attr("stroke", color(i))
-			.attr("stroke-dasharray", "2,2");
-
-		svg.append("text")
-			.attr("x", annotationX + 5)  // Adding extra space for clarity
-			.attr("y", annotationY)
-			.attr("text-anchor", "start")
-			.attr("class", "legend")
-			.style("fill", color(i))
-			.text(stateData.key);
-
+//		// Add a random annotation for each state using modulo
+//		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
+//		const randomDataPoint = stateData.values[randomIndex];
+//
+//		const annotationX = x(randomDataPoint.date_updated) + 55;
+//		const annotationY = y(randomDataPoint.new_cases) - 55;
+//
+//		svg.append("line")
+//			.attr("x1", x(randomDataPoint.date_updated))
+//			.attr("x2", annotationX)
+//			.attr("y1", y(randomDataPoint.new_cases))
+//			.attr("y2", annotationY)
+//			.attr("stroke", color(i))
+//			.attr("stroke-dasharray", "2,2");
+//
+//		svg.append("text")
+//			.attr("x", annotationX + 5)  // Adding extra space for clarity
+//			.attr("y", annotationY)
+//			.attr("text-anchor", "start")
+//			.attr("class", "legend")
+//			.style("fill", color(i))
+//			.text(stateData.key);
+//
 		// Legend
 		const legendRow = legend.append("g")
-              .attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
+				.attr("class", "legend-row")
+				.attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
 
 
 		legendRow.append("rect")
@@ -507,9 +509,13 @@ async function createCasesWeeklyNortheastChart() {
 }
 
 async function createCasesWeeklySouthChart() {
-	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
-		width = document.body.clientWidth - margin.left - margin.right,
+	const chartMargin = { top: 30, right: 140, bottom: 70, left: 10 };
+	const chartMargin2 = { top: 30, right: 140, bottom: 70, left: 10 };
+	const margin = { top: 30, right: 30, bottom: 70, left: -30 },
+		width = document.body.clientWidth - chartMargin.left - chartMargin.right - 300,
 		height = 425 - margin.top - margin.bottom;
+
+	console.log(width);
 
 	const parseDate = d3.timeParse("%m/%d/%Y");
 
@@ -517,12 +523,12 @@ async function createCasesWeeklySouthChart() {
 	const y = d3.scaleLinear().range([height, 0]);
 
 	const svg = d3.select("#cases-chart-south").append("svg")
-		.attr("width", '100%')
-		.attr("height", '100%')
-		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+		.attr("width", width)
+		.attr("height", height)
+		.attr("viewBox", `0 0 ${width + chartMargin.left + chartMargin.right} ${height + chartMargin.top + chartMargin.bottom}`)
 		.attr("preserveAspectRatio", "xMidYMid meet")
 		.append("g")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		.attr("transform", "translate(" + chartMargin.left + "," + chartMargin.top + ")");
 
 	initCovidRegionalData().then(data => {
 
@@ -555,11 +561,12 @@ async function createCasesWeeklySouthChart() {
 
 	// Create legend
 	const legend = svg.append("g")
-		.attr("transform", `translate(${width + margin.right - 200}, ${0})`);
+	    .attr("class", "legend-container")
+		.attr("transform", `translate(${width + margin.right}, ${-50})`);
 
 	// Add background and border for legend
 	const legendWidth = 150;
-    const legendHeight = groupedData.length * 20 + 45; // Adjusted for margin
+    const legendHeight = groupedData.length * 20 + 65; // Adjusted for margin
 
 	legend.append("rect")
 		.attr("width", legendWidth)
@@ -569,7 +576,7 @@ async function createCasesWeeklySouthChart() {
 	// Add legend title
 	legend.append("text")
 		.attr("x", legendWidth / 2)
-		.attr("y", 20)
+		.attr("y", 45)
 		.attr("class", "legend-title")
 		.attr("text-anchor", "middle")
 		.text("Southern States");
@@ -586,33 +593,33 @@ async function createCasesWeeklySouthChart() {
 			.attr("d", line)
 			.attr("stroke", color(i));
 
-		// Add a random annotation for each state using modulo
-		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
-		const randomDataPoint = stateData.values[randomIndex];
-
-		const annotationX = x(randomDataPoint.date_updated) + 55;
-		const annotationY = y(randomDataPoint.new_cases) - 55;
-
-		svg.append("line")
-			.attr("x1", x(randomDataPoint.date_updated))
-			.attr("x2", annotationX)
-			.attr("y1", y(randomDataPoint.new_cases))
-			.attr("y2", annotationY)
-			.attr("stroke", color(i))
-			.attr("stroke-dasharray", "2,2");
-
-		svg.append("text")
-			.attr("x", annotationX + 5)  // Adding extra space for clarity
-			.attr("y", annotationY)
-			.attr("text-anchor", "start")
-			.attr("class", "legend")
-			.style("fill", color(i))
-			.text(stateData.key);
+//		// Add a random annotation for each state using modulo
+//		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
+//		const randomDataPoint = stateData.values[randomIndex];
+//
+//		const annotationX = x(randomDataPoint.date_updated) - 35;
+//		const annotationY = y(randomDataPoint.new_cases) - 55;
+//
+//		svg.append("line")
+//			.attr("x1", x(randomDataPoint.date_updated))
+//			.attr("x2", annotationX)
+//			.attr("y1", y(randomDataPoint.new_cases))
+//			.attr("y2", annotationY)
+//			.attr("stroke", color(i))
+//			.attr("stroke-dasharray", "2,2");
+//
+//		svg.append("text")
+//			.attr("x", annotationX + 5)  // Adding extra space for clarity
+//			.attr("y", annotationY)
+//			.attr("text-anchor", "start")
+//			.attr("class", "legend")
+//			.style("fill", color(i))
+//			.text(stateData.key);
 
 		// Legend
 		const legendRow = legend.append("g")
-              .attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
-
+				.attr("class", "legend-row")
+				.attr("transform", `translate(15, ${i * 20 + 60})`); // Adjusted for margin
 
 		legendRow.append("rect")
 			.attr("width", 10)
@@ -631,14 +638,14 @@ async function createCasesWeeklySouthChart() {
 	// Add axis labels
 	svg.append("text")
 		.attr("text-anchor", "end")
-		.attr("x", width / 2 + margin.left)
-		.attr("y", height + margin.top + 40)
+		.attr("x", width / 2 + margin.left + 30)
+		.attr("y", height + margin.top + 30)
 		.text("Date");
 
 	svg.append("text")
 		.attr("text-anchor", "end")
 		.attr("transform", "rotate(-90)")
-		.attr("y", -margin.left + 20)
+		.attr("y", -50)
 		.attr("x", -height / 2 + margin.top)
 		.text("New Cases");
 
@@ -694,6 +701,7 @@ async function createCasesWeeklyMidwestChart() {
 
 	// Create legend
 	const legend = svg.append("g")
+	    .attr("class", "legend-container")
 		.attr("transform", `translate(${width + margin.right - 200}, ${0})`);
 
 	// Add background and border for legend
@@ -725,32 +733,33 @@ async function createCasesWeeklyMidwestChart() {
 			.attr("d", line)
 			.attr("stroke", color(i));
 
-		// Add a random annotation for each state using modulo
-		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
-		const randomDataPoint = stateData.values[randomIndex];
-
-		const annotationX = x(randomDataPoint.date_updated) + 55;
-		const annotationY = y(randomDataPoint.new_cases) - 55;
-
-		svg.append("line")
-			.attr("x1", x(randomDataPoint.date_updated))
-			.attr("x2", annotationX)
-			.attr("y1", y(randomDataPoint.new_cases))
-			.attr("y2", annotationY)
-			.attr("stroke", color(i))
-			.attr("stroke-dasharray", "2,2");
-
-		svg.append("text")
-			.attr("x", annotationX + 5)  // Adding extra space for clarity
-			.attr("y", annotationY)
-			.attr("text-anchor", "start")
-			.attr("class", "legend")
-			.style("fill", color(i))
-			.text(stateData.key);
+//		// Add a random annotation for each state using modulo
+//		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
+//		const randomDataPoint = stateData.values[randomIndex];
+//
+//		const annotationX = x(randomDataPoint.date_updated) + 55;
+//		const annotationY = y(randomDataPoint.new_cases) - 55;
+//
+//		svg.append("line")
+//			.attr("x1", x(randomDataPoint.date_updated))
+//			.attr("x2", annotationX)
+//			.attr("y1", y(randomDataPoint.new_cases))
+//			.attr("y2", annotationY)
+//			.attr("stroke", color(i))
+//			.attr("stroke-dasharray", "2,2");
+//
+//		svg.append("text")
+//			.attr("x", annotationX + 5)  // Adding extra space for clarity
+//			.attr("y", annotationY)
+//			.attr("text-anchor", "start")
+//			.attr("class", "legend")
+//			.style("fill", color(i))
+//			.text(stateData.key);
 
 		// Legend
 		const legendRow = legend.append("g")
-              .attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
+			.attr("class", "legend-row")
+			.attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
 
 
 		legendRow.append("rect")
@@ -833,6 +842,7 @@ async function createCasesWeeklyWestChart() {
 
 	// Create legend
 	const legend = svg.append("g")
+		.attr("class", "legend-container")
 		.attr("transform", `translate(${width + margin.right - 200}, ${0})`);
 
 	// Add background and border for legend
@@ -864,29 +874,29 @@ async function createCasesWeeklyWestChart() {
 			.attr("d", line)
 			.attr("stroke", color(i));
 
-		// Add a random annotation for each state using modulo
-		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
-		const randomDataPoint = stateData.values[randomIndex];
-
-		const annotationX = x(randomDataPoint.date_updated) + 55;
-		const annotationY = y(randomDataPoint.new_cases) - 55;
-
-		svg.append("line")
-			.attr("x1", x(randomDataPoint.date_updated))
-			.attr("x2", annotationX)
-			.attr("y1", y(randomDataPoint.new_cases))
-			.attr("y2", annotationY)
-			.attr("stroke", color(i))
-			.attr("stroke-dasharray", "2,2");
-
-		svg.append("text")
-			.attr("x", annotationX + 5)  // Adding extra space for clarity
-			.attr("y", annotationY)
-			.attr("text-anchor", "start")
-			.attr("class", "legend")
-			.style("fill", color(i))
-			.text(stateData.key);
-
+//		// Add a random annotation for each state using modulo
+//		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
+//		const randomDataPoint = stateData.values[randomIndex];
+//
+//		const annotationX = x(randomDataPoint.date_updated) + 55;
+//		const annotationY = y(randomDataPoint.new_cases) - 55;
+//
+//		svg.append("line")
+//			.attr("x1", x(randomDataPoint.date_updated))
+//			.attr("x2", annotationX)
+//			.attr("y1", y(randomDataPoint.new_cases))
+//			.attr("y2", annotationY)
+//			.attr("stroke", color(i))
+//			.attr("stroke-dasharray", "2,2");
+//
+//		svg.append("text")
+//			.attr("x", annotationX + 5)  // Adding extra space for clarity
+//			.attr("y", annotationY)
+//			.attr("text-anchor", "start")
+//			.attr("class", "legend")
+//			.style("fill", color(i))
+//			.text(stateData.key);
+//
 		// Legend
 		const legendRow = legend.append("g")
               .attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
@@ -999,29 +1009,29 @@ function updateRegionalChart(data, selectedStates, startDate, endDate) {
 			.attr("d", line)
 			.attr("stroke", color(i));
 
-		// Add a random annotation for each state using modulo
-		const randomIndex = i % stateData.values.length;
-		const randomDataPoint = stateData.values[randomIndex];
-
-		const annotationX = x(randomDataPoint.date_updated) + 55;
-		const annotationY = y(randomDataPoint.new_cases) - 55;
-		const randomYOffset = Math.random() * (height - y(randomDataPoint.new_cases) - 20);
-
-		svg.append("line")
-			.attr("x1", x(randomDataPoint.date_updated))
-			.attr("x2", annotationX)
-			.attr("y1", y(randomDataPoint.new_cases))
-			.attr("y2", y(randomDataPoint.new_cases) + randomYOffset)
-			.attr("stroke", color(i))
-			.attr("stroke-dasharray", "2,2");
-
-		svg.append("text")
-			.attr("x", annotationX + 5)  // Adding extra space for clarity
-			.attr("y", y(randomDataPoint.new_cases) + randomYOffset)
-			.attr("text-anchor", "start")
-			.attr("class", "legend")
-			.style("fill", color(i))
-			.text(stateData.key);
+//		// Add a random annotation for each state using modulo
+//		const randomIndex = i % stateData.values.length;
+//		const randomDataPoint = stateData.values[randomIndex];
+//
+//		const annotationX = x(randomDataPoint.date_updated) + 55;
+//		const annotationY = y(randomDataPoint.new_cases) - 55;
+//		const randomYOffset = Math.random() * (height - y(randomDataPoint.new_cases) - 20);
+//
+//		svg.append("line")
+//			.attr("x1", x(randomDataPoint.date_updated))
+//			.attr("x2", annotationX)
+//			.attr("y1", y(randomDataPoint.new_cases))
+//			.attr("y2", y(randomDataPoint.new_cases) + randomYOffset)
+//			.attr("stroke", color(i))
+//			.attr("stroke-dasharray", "2,2");
+//
+//		svg.append("text")
+//			.attr("x", annotationX + 5)  // Adding extra space for clarity
+//			.attr("y", y(randomDataPoint.new_cases) + randomYOffset)
+//			.attr("text-anchor", "start")
+//			.attr("class", "legend")
+//			.style("fill", color(i))
+//			.text(stateData.key);
 	});
 
 	// Add axis labels
@@ -1040,6 +1050,7 @@ function updateRegionalChart(data, selectedStates, startDate, endDate) {
 
 	// Create legend
 	const legend = svg.append("g")
+		.attr("class", "legend-container")
 		.attr("transform", `translate(${width + 20}, ${margin.top})`);
 
 	// Add background and border for legend
@@ -1098,6 +1109,7 @@ function updateRegionalChart(data, selectedStates, startDate, endDate) {
 
 		// Legend
 		const legendRow = legend.append("g")
+		      .attr("class", "legend-row")
               .attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
 
 
@@ -1169,30 +1181,6 @@ async function initializeRegionalChart(data) {
 			.attr("class", "line")
 			.attr("d", line)
 			.attr("stroke", color(i));
-
-		// Add a random annotation for each state using modulo
-		const randomIndex = i % stateData.values.length;
-		const randomDataPoint = stateData.values[randomIndex];
-
-		const annotationX = x(randomDataPoint.date_updated) + 55;
-		const annotationY = y(randomDataPoint.new_cases) - 55;
-		const randomYOffset = Math.random() * (height - y(randomDataPoint.new_cases) - 20);
-
-		svg.append("line")
-			.attr("x1", x(randomDataPoint.date_updated))
-			.attr("x2", annotationX)
-			.attr("y1", y(randomDataPoint.new_cases))
-			.attr("y2", y(randomDataPoint.new_cases) + randomYOffset)
-			.attr("stroke", color(i))
-			.attr("stroke-dasharray", "2,2");
-
-		svg.append("text")
-			.attr("x", annotationX + 5)  // Adding extra space for clarity
-			.attr("y", y(randomDataPoint.new_cases) + randomYOffset)
-			.attr("text-anchor", "start")
-			.attr("class", "legend")
-			.style("fill", color(i))
-			.text(stateData.key);
 	});
 
 	// Add axis labels
@@ -1211,11 +1199,12 @@ async function initializeRegionalChart(data) {
 
 	// Create legend
 	const legend = svg.append("g")
+	    .attr("class", "legend-container")
 		.attr("transform", `translate(${width + 20}, ${margin.top})`);
 
 	// Add background and border for legend
 	const legendWidth = 150;
-	const legendHeight = groupedData.length * 20 + 60; // Adjusted for margin
+	const legendHeight = groupedData.length * 3 + 40; // Adjusted for margin
 
 
 	legend.append("rect")
@@ -1244,6 +1233,12 @@ async function initializeRegionalChart(data) {
 			.attr("d", line)
 			.attr("stroke", color(i));
 
+	    const column = i % 7;
+		const row = Math.floor(i / 7);
+		const legendRow = legend.append("g")
+			.attr("class", "legend-row")
+			.attr("transform", `translate(${column * 50 + 15}, ${row * 20 + 40})`); // Adjusted for margin and columns
+		
 		// Add a random annotation for each state using modulo
 		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
 		const randomDataPoint = stateData.values[randomIndex];
@@ -1266,11 +1261,6 @@ async function initializeRegionalChart(data) {
 			.attr("class", "legend")
 			.style("fill", color(i))
 			.text(stateData.key);
-
-		// Legend
-		const legendRow = legend.append("g")
-              .attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
-
 
 		legendRow.append("rect")
 			.attr("width", 10)

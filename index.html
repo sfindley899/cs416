@@ -98,21 +98,43 @@
             fill: none;
             stroke-width: 2px;
         }
-        .legend-box {
-            stroke: black;
-            stroke-width: 1px;
-        }
-        .legend-bg {
-            fill: lightgray;
-            opacity: 0.8;
-        }
-        .legend-title {
-            font-size: 14px;
-            font-weight: bold;
-            fill: black;
-			margin: 10px 0;
+		.legend-container {
+			display: flex;
+			flex-wrap: wrap;
+			overflow-y: auto;
+			max-height: 100px; /* Adjust this value as needed */
+			justify-content: flex-start; /* Align items to start (left) */
+		}
 
-        }
+		.legend-row {
+			display: flex;
+			align-items: center;
+			margin-right: 40px; /* Adjust spacing between columns */
+			flex-basis: calc(33% - 20px); /* Adjust width taking margin into account */
+			box-sizing: border-box;
+			padding: 5px;
+		}
+
+		.legend-box {
+			width: 10px;
+			height: 10px;
+			margin-right: 5px; /* Adjust spacing between box and text */
+			stroke: black;
+			stroke-width: 1px;
+		}
+
+		.legend-bg {
+			fill: lightgray;
+			opacity: 0.8;
+		}
+
+		.legend-title {
+			font-size: 14px;
+			font-weight: bold;
+			fill: black;
+			margin: 10px 0;
+		}
+
         .image-container img {
             max-width: 100%;
             height: auto;
@@ -195,36 +217,31 @@
         </div>
         <div class="section" style="background-color: #7e7e7e;">
             <div class="content-block">
-                <h3>Weekly Deaths and Cases in the Northeast.</h3>
-				<div id="cases-chart-northeast"></div>
                 <h3>The Northeast faced significant challenges at various points during the pandemic, reflecting its high population density and initial outbreak.</h3>
-				
+				<div id="cases-chart-northeast"></div>
 				<script>loadCasesWeeklyNortheastD3Chart()</script>
 			
             </div>
         </div>
         <div class="section" style="background-color: #8e8e8e;">
             <div class="content-block">
-                <h3>Weekly Deaths and Cases in the South</h3>
+                <h3>The South experienced varying impacts, with some states hit harder due to different public health responses and population factors.</h3>
 				<div id="cases-chart-south"></div>
 				<script>loadCasesWeeklySouthD3Chart()</script>
-                <h3>The South experienced varying impacts, with some states hit harder due to different public health responses and population factors.</h3>
             </div>
         </div>
         <div class="section" style="background-color: #8e8e8e;">
             <div class="content-block">
-                <h3>Weekly Deaths and Cases in the Midwest</h3>
+                <h3>The Midwest saw significant surges in cases and deaths, especially during the later waves of the pandemic.</h3>
 				<div id="cases-chart-midwest"></div>
 				<script>loadCasesWeeklyMidwestD3Chart()</script>
-                <h3>The Midwest saw significant surges in cases and deaths, especially during the later waves of the pandemic.</h3>
             </div>
         </div>
 		<div class="section" style="background-color: #8e8e8e;">
             <div class="content-block">
-                <h3>Weekly Deaths and Cases in the West</h3>
+                <h3>The West faced severe impacts, with significant spikes in cases and deaths at various stages of the pandemic.</h3>
 				<div id="cases-chart-west"></div>
 				<script>loadCasesWeeklyWestD3Chart()</script>	
-                <h3>The South faced severe impacts, with significant spikes in cases and deaths at various stages of the pandemic.</h3>
             </div>
         </div>
         <div class="section" style="background-color: #6e6e6e;">
