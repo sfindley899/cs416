@@ -13,17 +13,31 @@ const total_death_annotations = [
 { date: "5/13/2023", count: null, label: "May 2023:\nPublic health emergency ends" }
 ];
 
-const annotations_x = [
-{ date: "1/25/2020", count: null, label: "January 2020:\nFirst COVID-19 case in the US" },
-{ date: "2/1/2020", count: null, label: "January 2020:\nPublic health emergency declared" },
-{ date: "3/14/2020", count: null, label: "March 2020:\nNational emergency declared" },
-{ date: "4/3/2020", count: null, label: "April 2020:\nCDC recommends masks" },
-{ date: "12/12/2020", count: null, label: "December 2020:\nFirst vaccine authorized" },
-{ date: "1/23/2021", count: null, label: "January 2021:\nNew administration's pandemic response" },
-{ date: "3/13/2021", count: null, label: "March 2021:\nAmerican Rescue Plan signed" },
-{ date: "7/24/2021", count: null, label: "July 2021:\nCDC updates mask guidance" },
-{ date: "11/6/2021", count: null, label: "November 2021:\nVaccines for children approved" },
-{ date: "5/13/2023", count: null, label: "May 2023:\nPublic health emergency ends" }
+const case_count_annotations = [
+{ date: "1/23/2020", count: null, label: "January 2020:\nFirst US COVID-19 case" },
+//{ date: "2/1/2020", count: null, label: "January 2020:\nPublic health emergency declared" },
+//{ date: "3/14/2020", count: null, label: "March 2020:\nNational emergency declared" },
+// { date: "4/23/2020", count: null, label: "April 2020:\nCDC recommends masks" },
+{ date: "12/10/2020", count: null, label: "December 2020:\nFirst vaccine authorized" },
+//{ date: "1/23/2021", count: null, label: "January 2021:\nNew administration's pandemic response" },
+//{ date: "3/13/2021", count: null, label: "March 2021:\nAmerican Rescue Plan signed" },
+{ date: "7/22/2021", count: null, label: "July 2021:\nCDC mask guidance" },
+{ date: "11/25/2021", count: null, label: "November 2021:\nOmicron variant reported" }, // Added Omicron introduction
+//{ date: "11/6/2021", count: null, label: "November 2021:\nVaccines for children approved" },
+// { date: "5/4/2023", count: null, label: "May 2023:\nPublic health emergency ends" }
+];
+
+const death_count_annotations = [
+//  { date: "1/23/2020", count: null, label: "January 2020:\nFirst US COVID-19 case" },
+//  { date: "2/1/2020", count: null, label: "January 2020:\nPublic health emergency declared" },
+  { date: "3/19/2020", count: null, label: "March 2020:\nNational emergency declared" },
+ // { date: "4/23/2020", count: null, label: "April 2020:\nCDC recommends " },
+//  { date: "12/14/2020", count: null, label: "December 2020:\nFirst vaccine authorized" },
+  { date: "9/3/2020", count: null, label: "September 2020:\nAlpha variant identified" },
+//  { date: "5/1/2021", count: null, label: "May 2021:\nBeta variant identified" },
+  { date: "6/3/2021", count: null, label: "June 2021:\nDelta variant identified" },
+  { date: "11/25/2021", count: null, label: "November 2021:\nOmicron variant reported" },
+//  { date: "5/4/2023", count: null, label: "May 2023:\nPublic health emergency ends" }
 ];
 
 const body = document.body;
@@ -322,8 +336,8 @@ async function createCumulativeDeathsChart() {
 
 			svg.append("line")
 				.attr("x1", annotationX)
-				.attr("x2", annotationX)
-				.attr("y1", height - 20)
+				.attr("x2", annotationX + 50)
+				.attr("y1", height)
 				.attr("y2", annotationY)
 				.attr("stroke", "black")
 				.attr("stroke-dasharray", "2,2");
@@ -331,7 +345,7 @@ async function createCumulativeDeathsChart() {
 			svg.append("rect")
 				.attr("x", annotationX + 5)
 				.attr("y", annotationY - 40)
-				.attr("width", 235)
+				.attr("width", 240)
 				.attr("height", 60)
 				.attr("fill", "black")
 				.attr("opacity", 0.7);
@@ -358,7 +372,7 @@ async function createCasesWeeklyChart() {
 	const parseDate = d3.timeParse("%m/%d/%Y");
 
 	const x = d3.scaleTime().range([0, width]);
-	const y = d3.scaleLinear().range([height, 0]);
+	const y = d3.scaleLinear().range([height - 50, 0]);
 	const formatDateString = date => d3.timeFormat("%Y-%m-%d")(date);
 
 	const svg = d3.select("#cases-chart").append("svg")
@@ -470,7 +484,7 @@ async function createCasesWeeklyChart() {
 							.attr("class", "annotation-rect")
 							.attr("x", annotationValuesX - 55)
 							.attr("y", annotationValuesY - 40) // Adjust as needed
-							.attr("width", 175) // Adjust as needed
+							.attr("width", 185) // Adjust as needed
 							.attr("height", 50) // Adjust as needed
 							.attr("fill", "white")
 							.attr("stroke", "black");
@@ -479,13 +493,13 @@ async function createCasesWeeklyChart() {
 				const textElement = textGroup.append("text")
 											.attr("class", "annotation-text")
 											.attr("x", annotationValuesX - 50)
-											.attr("y", annotationValuesY - 20) // Elevate the text
+											.attr("y", annotationValuesY - 15) // Elevate the text
 											.attr("text-anchor", "start")
 											.style("fill", "black")
 											.style("font-weight", "bold");
 
            textElement.selectAll("tspan")
-                      .data(["Date: " + dataPoint.legend, "Total Deaths: " + dataPoint.value])
+                      .data(["Date: " + dataPoint.legend, "Weekly Cases: " + dataPoint.value])
                       .enter()
                       .append("tspan")
                       .attr("x", annotationValuesX - 50)
@@ -511,18 +525,18 @@ async function createCasesWeeklyChart() {
 			.attr("d", line);
 
 		// Add annotations to the chart
-		total_death_annotations.forEach(ann => {
+		case_count_annotations.forEach((ann, index) => {
 			console.log(parseDate(ann.date))
 			const dataPoint = data.find(d => formatDateString(d.date_updated) === formatDateString(parseDate(ann.date)));
 			if (dataPoint) {
 			console.log("found data point")
 			const annotationX = x(parseDate(ann.date));
-			const annotationY = y(dataPoint.abs_new_cases) - 15;
+			const annotationY = 250 - 65  * index;
 
 			svg.append("line")
+				.attr("x2", annotationX + 40)
 				.attr("x1", annotationX)
-				.attr("x2", annotationX)
-				.attr("y1", height - 20)
+				.attr("y1", height)
 				.attr("y2", annotationY)
 				.attr("stroke", "black")
 				.attr("stroke-dasharray", "2,2");
@@ -536,7 +550,7 @@ async function createCasesWeeklyChart() {
 				.attr("opacity", 0.7);
 
 			svg.append("text")
-				.attr("x", annotationX + 10)
+				.attr("x", annotationX + 30)
 				.attr("y", annotationY - 15)
 				.attr("text-anchor", "start")
 				.attr("class", "annotation")
@@ -546,8 +560,6 @@ async function createCasesWeeklyChart() {
 				.call(wrapText, 150); // Function to wrap text within the specified width	
 			}
 		});
-
-
 	});
 }
 
@@ -559,7 +571,8 @@ async function createDeathsWeeklyChart() {
 	const parseDate = d3.timeParse("%m/%d/%Y");
 
 	const x = d3.scaleTime().range([0, width]);
-	const y = d3.scaleLinear().range([height, 0]);
+	const y = d3.scaleLinear().range([height - 50, 0]);
+	const formatDateString = date => d3.timeFormat("%Y-%m-%d")(date);
 
 	const svg = d3.select("#deaths-chart").append("svg")
 		.attr("width", '90%')
@@ -568,16 +581,31 @@ async function createDeathsWeeklyChart() {
 		.attr("preserveAspectRatio", "xMidYMid meet")
 		.append("g")
 		.attr("transform",
-			"translate(" + (margin.left + 20) + "," + margin.top + ")");
+			"translate(" + (margin.left + 30) + "," + margin.top + ")");
 
-	initCovidWeeklyDeathData().then(data => {
+     initCovidRegionalData().then(data => {
 		data.forEach(d => {
-			d.date = parseDate(d.date);
-			d.weekly_deaths = +d.weekly_deaths;
+			d.date_updated = parseDate(d.date_updated)			
 		});
 
-		x.domain(d3.extent(data, d => d.date));
-		y.domain([0, d3.max(data, d => d.weekly_deaths)]);
+		// Aggregate data by date
+		const aggregatedData = d3.nest()
+			.key(d => d.start_date)
+			.rollup(v => ({
+				new_deaths: d3.sum(v, d => +d.new_deaths),
+				first_date: v[0].start_date, // Use the first start_date
+				legend: v[0].legend, // Use the first start_date
+			}))
+			.entries(data)
+			.map(d => ({
+				date: new Date(d.key),
+				value: d.value.new_deaths,
+				current_date: d.value.first_date, // Include the first start_date
+				legend: d.value.legend
+			}));
+
+		x.domain(d3.extent(aggregatedData, d => d.date));
+		y.domain([0, d3.max(aggregatedData, d => d.value)]);
 
 		svg.append("g")
 			.attr("transform", "translate(0," + height + ")")
@@ -596,632 +624,151 @@ async function createDeathsWeeklyChart() {
 
 		// Y Axis label
 		svg.append("text")
-			.attr("class", "axis-label")
+		    .attr("class", "axis-label")
 			.attr("text-anchor", "end")
 			.attr("transform", "rotate(-90)")
-			.attr("y", -margin.left + 20)
+			.attr("y", -margin.left)
 			.attr("x", -height / 3)
 			.text("New Deaths per Week");
 
 		const area = d3.area()
 			.x(d => x(d.date))
 			.y0(height)
-			.y1(d => y(d.weekly_deaths));
+			.y1(d => y(d.value));
+
+		const proximityThreshold = 20; // Adjust this value as needed
 
 		svg.append("path")
-			.data([data])
+			.datum(aggregatedData)
 			.attr("class", "area")
-			.attr("d", area);
+			.attr("d", area)
+		    .on("mousemove", function(event) {
+			   const [mouseX, mouseY] = d3.mouse(this);
+			   const date = x.invert(mouseX);
+			   const dataPoint = aggregatedData.find(dp => {
+				   
+				   console.log(dp)
+				   const annotationValuesX = x( parseDate(dp.current_date));
+				   const annotationValuesY = y(dp.value);
+					console.log(annotationValuesY)
+				   const distance = Math.abs(mouseX - annotationValuesX);
+				   return distance < proximityThreshold;
+			   });
+
+			   if (dataPoint) {
+				   const annotationValuesX = x(parseDate(dataPoint.current_date));
+				   const annotationValuesY = y(dataPoint.value);
+
+				   // Remove existing annotations
+				   svg.selectAll(".annotation-line").remove();
+				   svg.selectAll(".annotation-text").remove();
+				   svg.selectAll(".annotation-rect").remove();
+
+				   // Add dotted line below the point
+				   svg.append("line")
+					  .attr("class", "annotation-line")
+					  .attr("x1", annotationValuesX)
+					  .attr("x2", annotationValuesX)
+					  .attr("y1", annotationValuesY - 20) // Adjust this value to make the line higher
+					  .attr("y2", height) // Extend to the bottom of the SVG
+					  .attr("stroke", "black")
+					  .attr("stroke-dasharray", "4,4");
+
+					
+					// Add background rectangle
+				   const textGroup = svg.append("g")
+										.attr("class", "annotation-text-group");
+
+				   textGroup.append("rect")
+							.attr("class", "annotation-rect")
+							.attr("x", annotationValuesX - 55)
+							.attr("y", annotationValuesY - 40) // Adjust as needed
+							.attr("width", 185) // Adjust as needed
+							.attr("height", 50) // Adjust as needed
+							.attr("fill", "white")
+							.attr("stroke", "black");
+
+				// Add text
+				const textElement = textGroup.append("text")
+											.attr("class", "annotation-text")
+											.attr("x", annotationValuesX - 50)
+											.attr("y", annotationValuesY - 15) // Elevate the text
+											.attr("text-anchor", "start")
+											.style("fill", "black")
+											.style("font-weight", "bold");
+
+           textElement.selectAll("tspan")
+                      .data(["Date: " + dataPoint.legend, "Weekly Deaths: " + dataPoint.value])
+                      .enter()
+                      .append("tspan")
+                      .attr("x", annotationValuesX - 50)
+                      .attr("dy", (d, i) => i * 20) // Adjust line spacing as needed
+                      .text(d => d);
+			   }
+		   })
+		   .on("mouseout", function() {
+			   // Remove annotation
+			   svg.selectAll(".annotation-line").remove();
+			   svg.selectAll(".annotation-text").remove();
+			   svg.selectAll(".annotation-rect").remove();
+		   });
+
 
 		const line = d3.line()
 			.x(d => x(d.date))
-			.y(d => y(d.weekly_deaths));
+			.y(d => y(d.value));
 
 		svg.append("path")
-			.data([data])
+			.datum(aggregatedData)
 			.attr("class", "line")
-			.attr("d", line)
-			.style("fill", "none")
-			.style("stroke", "steelblue")
-			.style("stroke-width", "2px");
+			.attr("d", line);
+
+		// Add annotations to the chart
+		death_count_annotations.forEach((ann, index) => {
+			console.log(parseDate(ann.date))
+			const dataPoint = data.find(d => formatDateString(d.date_updated) === formatDateString(parseDate(ann.date)));
+			if (dataPoint) {
+			console.log("found data point")
+			const annotationX = x(parseDate(ann.date));
+			const annotationY = 250 - 65  * index;
+
+			svg.append("line")
+				.attr("x2", annotationX + 40)
+				.attr("x1", annotationX)
+				.attr("y1", height)
+				.attr("y2", annotationY)
+				.attr("stroke", "black")
+				.attr("stroke-dasharray", "2,2");
+	
+			svg.append("line")
+				.attr("x2", annotationX + 40)
+				.attr("x1", annotationX)
+				.attr("y1", height)
+				.attr("y2", annotationY)
+				.attr("stroke", "black")
+				.attr("stroke-dasharray", "2,2");
+
+			svg.append("rect")
+				.attr("x", annotationX + 5)
+				.attr("y", annotationY - 40)
+				.attr("width", 230)
+				.attr("height", 60)
+				.attr("fill", "black")
+				.attr("opacity", 0.7);
+
+			svg.append("text")
+				.attr("x", annotationX + 30)
+				.attr("y", annotationY - 15)
+				.attr("text-anchor", "start")
+				.attr("class", "annotation")
+				.attr("fill", "white")
+				.style("font-weight", "bold")
+				.text(ann.label)
+				.call(wrapText, 150); // Function to wrap text within the specified width	
+			}
+		});
 	});
 }
-/*
-async function createCasesWeeklyNortheastChart() {
-	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
-		width = document.body.clientWidth - margin.left - margin.right,
-		height = 425 - margin.top - margin.bottom;
-
-	const parseDate = d3.timeParse("%m/%d/%Y");
-
-	const x = d3.scaleTime().range([0, width]);
-	const y = d3.scaleLinear().range([height, 0]);
-
-	const svg = d3.select("#cases-chart-northeast").append("svg")
-		.attr("width", '90%')
-		.attr("height", '100%')
-		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
-		.attr("preserveAspectRatio", "xMidYMid meet")
-		.append("g")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-	initCovidRegionalData().then(data => {
-
-	// Filter data for the Northeast region
-	const filteredData = data.filter(d => d.region === "Northeast");
-
-	// Parse dates and convert new cases to numbers
-	filteredData.forEach(d => {
-		d.date_updated = parseDate(d.date_updated);
-		d.new_deaths = +d.new_deaths;
-	});
-
-	// Group data by state
-	const groupedData = d3.nest()
-		.key(d => d.state_full)
-		.entries(filteredData);
-
-	x.domain(d3.extent(filteredData, d => d.date_updated));
-	y.domain([0, d3.max(filteredData, d => d.new_deaths)]);
-
-	svg.append("g")
-		.attr("transform", "translate(0," + height + ")")
-		.call(d3.axisBottom(x));
-
-	svg.append("g")
-		.call(d3.axisLeft(y));
-
-	// Define a color scale
-	const color = d3.scaleOrdinal(d3.schemeCategory10);
-
-	// Create legend
-	const legend = svg.append("g")
-	    .attr("class", "legend-container")
-		.attr("transform", `translate(${width + margin.right - 200}, ${-20})`);
-
-	// Add background and border for legend
-	const legendWidth = 150;
-    const legendHeight = groupedData.length * 20 + 45; // Adjusted for margin
-
-	legend.append("rect")
-		.attr("width", legendWidth)
-		.attr("height", legendHeight)
-		.attr("class", "legend-bg");
-
-	// Add legend title
-	legend.append("text")
-		.attr("x", legendWidth / 2)
-		.attr("y", 20)
-		.attr("class", "legend-title")
-		.attr("text-anchor", "middle")
-		.text("Northeast States");
-
-	// Plot each state's data with a different color
-	groupedData.forEach((stateData, i) => {
-		const line = d3.line()
-			.x(d => x(d.date_updated))
-			.y(d => y(d.new_deaths));
-
-		svg.append("path")
-			.datum(stateData.values)
-			.attr("class", "line")
-			.attr("d", line)
-			.attr("stroke", color(i));
-
-		// Legend
-		const legendRow = legend.append("g")
-				.attr("class", "legend-row")
-				.attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
-
-
-		legendRow.append("rect")
-			.attr("width", 10)
-			.attr("height", 10)
-			.attr("class", "legend-box")
-			.attr("fill", color(i));
-
-
-		legendRow.append("text")
-			.attr("x", 20)
-			.attr("y", 10)
-			.attr("class", "legend")
-			.text(stateData.key);
-	});
-
-
-	// Function to format dates as strings for comparison
-	const formatDateString = date => d3.timeFormat("%Y-%m-%d")(date);
-
-
-	// Add annotations to the chart
-	total_death_annotations.forEach(ann => {
-		console.log(parseDate(ann.date))
-		const dataPoint = data.find(d => formatDateString(d.date_value) === formatDateString(parseDate(ann.date)));
-		if (dataPoint) {
-		console.log("found data point")
-		const annotationX = x(parseDate(ann.date));
-		const annotationY = y(dataPoint["Cumulative Deaths"]) - 10;
-
-		svg.append("line")
-			.attr("x1", annotationX)
-			.attr("x2", annotationX)
-			.attr("y1", height)
-			.attr("y2", annotationY)
-			.attr("stroke", "black")
-			.attr("stroke-dasharray", "2,2");
-
-		svg.append("rect")
-			.attr("x", annotationX + 5)
-			.attr("y", annotationY - 40)
-			.attr("width", 225)
-			.attr("height", 60)
-			.attr("fill", "black")
-			.attr("opacity", 0.7);
-
-		svg.append("text")
-			.attr("x", annotationX + 10)
-			.attr("y", annotationY - 15)
-			.attr("text-anchor", "start")
-			.attr("class", "annotation")
-			.attr("fill", "white")
-			.text(ann.label)
-			.call(wrapText, 150);
-		}
-		else
-		{
-			console.log("could not find it.")
-		}
-	});
-
-	// Add axis labels
-	svg.append("text")
-		.attr("class", "axis-label")
-		.attr("text-anchor", "end")
-		.attr("x", width / 2 + margin.left)
-		.attr("y", height + margin.top + 40)
-		.text("Date");
-
-	svg.append("text")
-		.attr("class", "axis-label")
-		.attr("text-anchor", "end")
-		.attr("transform", "rotate(-90)")
-		.attr("y", -margin.left + 20)
-		.attr("x", -height / 3)
-		.text("New Deaths per Week");
-
-	});
-}
-
-async function createCasesWeeklySouthChart() {
-	const chartMargin = { top: 30, right: 140, bottom: 70, left: 10 };
-	const chartMargin2 = { top: 30, right: 140, bottom: 70, left: 10 };
-	const margin = { top: 30, right: 30, bottom: 70, left: -30 },
-		width = document.body.clientWidth - chartMargin.left - chartMargin.right - 300,
-		height = 425 - margin.top - margin.bottom;
-
-	const parseDate = d3.timeParse("%m/%d/%Y");
-
-	const x = d3.scaleTime().range([0, width]);
-	const y = d3.scaleLinear().range([height, 0]);
-
-	const svg = d3.select("#cases-chart-south").append("svg")
-		.attr("width", width)
-		.attr("height", height)
-		.attr("viewBox", `0 0 ${width + chartMargin.left + chartMargin.right} ${height + chartMargin.top + chartMargin.bottom}`)
-		.attr("preserveAspectRatio", "xMidYMid meet")
-		.append("g")
-		.attr("transform", "translate(" + chartMargin.left + "," + chartMargin.top + ")");
-
-	initCovidRegionalData().then(data => {
-
-	// Filter data for the South region
-	const filteredData = data.filter(d => d.region === "South");
-
-	// Parse dates and convert new cases to numbers
-	filteredData.forEach(d => {
-		d.date_updated = parseDate(d.date_updated);
-		d.new_deaths = +d.new_deaths;
-	});
-
-	// Group data by state
-	const groupedData = d3.nest()
-		.key(d => d.state_full)
-		.entries(filteredData);
-
-	x.domain(d3.extent(filteredData, d => d.date_updated));
-	y.domain([0, d3.max(filteredData, d => d.new_deaths)]);
-
-	svg.append("g")
-		.attr("transform", "translate(0," + height + ")")
-		.call(d3.axisBottom(x));
-
-	svg.append("g")
-		.call(d3.axisLeft(y));
-
-	// Define a color scale
-	const color = d3.scaleOrdinal(d3.schemeCategory10);
-
-	// Create legend
-	const legend = svg.append("g")
-	    .attr("class", "legend-container")
-		.attr("transform", `translate(${width + margin.right}, ${-50})`);
-
-	// Add background and border for legend
-	const legendWidth = 150;
-    const legendHeight = groupedData.length * 20 + 65; // Adjusted for margin
-
-	legend.append("rect")
-		.attr("width", legendWidth)
-		.attr("height", legendHeight)
-		.attr("class", "legend-bg");
-
-	// Add legend title
-	legend.append("text")
-		.attr("x", legendWidth / 2)
-		.attr("y", 45)
-		.attr("class", "legend-title")
-		.attr("text-anchor", "middle")
-		.text("Southern States");
-
-	// Plot each state's data with a different color
-	groupedData.forEach((stateData, i) => {
-		const line = d3.line()
-			.x(d => x(d.date_updated))
-			.y(d => y(d.new_deaths));
-
-		svg.append("path")
-			.datum(stateData.values)
-			.attr("class", "line")
-			.attr("d", line)
-			.attr("stroke", color(i));
-
-//		// Add a random annotation for each state using modulo
-//		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
-//		const randomDataPoint = stateData.values[randomIndex];
-//
-//		const annotationX = x(randomDataPoint.date_updated) - 35;
-//		const annotationY = y(randomDataPoint.new_deaths) - 55;
-//
-//		svg.append("line")
-//			.attr("x1", x(randomDataPoint.date_updated))
-//			.attr("x2", annotationX)
-//			.attr("y1", y(randomDataPoint.new_deaths))
-//			.attr("y2", annotationY)
-//			.attr("stroke", color(i))
-//			.attr("stroke-dasharray", "2,2");
-//
-//		svg.append("text")
-//			.attr("x", annotationX + 5)  // Adding extra space for clarity
-//			.attr("y", annotationY)
-//			.attr("text-anchor", "start")
-//			.attr("class", "legend")
-//			.style("fill", color(i))
-//			.text(stateData.key);
-
-		// Legend
-		const legendRow = legend.append("g")
-				.attr("class", "legend-row")
-				.attr("transform", `translate(15, ${i * 20 + 60})`); // Adjusted for margin
-
-		legendRow.append("rect")
-			.attr("width", 10)
-			.attr("height", 10)
-			.attr("class", "legend-box")
-			.attr("fill", color(i));
-
-
-		legendRow.append("text")
-			.attr("x", 20)
-			.attr("y", 10)
-			.attr("class", "legend")
-			.text(stateData.key);
-	});
-
-	// Add axis labels
-	svg.append("text")
-		.attr("class", "axis-label")
-		.attr("text-anchor", "end")
-		.attr("x", width / 2 + margin.left + 30)
-		.attr("y", height + margin.top + 30)
-		.text("Date");
-
-	svg.append("text")
-		.attr("class", "axis-label")
-		.attr("text-anchor", "end")
-		.attr("transform", "rotate(-90)")
-		.attr("y", -50)
-		.attr("x", -height / 3)
-		.text("New Deaths per Week");
-
-	});
-}
-
-async function createCasesWeeklyMidwestChart() {
-	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
-		width = document.body.clientWidth - margin.left - margin.right,
-		height = 425 - margin.top - margin.bottom;
-
-	const parseDate = d3.timeParse("%m/%d/%Y");
-
-	const x = d3.scaleTime().range([0, width]);
-	const y = d3.scaleLinear().range([height, 0]);
-
-	const svg = d3.select("#cases-chart-midwest").append("svg")
-		.attr("width", '90%')
-		.attr("height", '100%')
-		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
-		.attr("preserveAspectRatio", "xMidYMid meet")
-		.append("g")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-	initCovidRegionalData().then(data => {
-
-	// Filter data for the South region
-	const filteredData = data.filter(d => d.region === "Midwest");
-
-	// Parse dates and convert new cases to numbers
-	filteredData.forEach(d => {
-		d.date_updated = parseDate(d.date_updated);
-		d.new_deaths = +d.new_deaths;
-	});
-
-	// Group data by state
-	const groupedData = d3.nest()
-		.key(d => d.state_full)
-		.entries(filteredData);
-
-	x.domain(d3.extent(filteredData, d => d.date_updated));
-	y.domain([0, d3.max(filteredData, d => d.new_deaths)]);
-
-	svg.append("g")
-		.attr("transform", "translate(0," + height + ")")
-		.call(d3.axisBottom(x));
-
-	svg.append("g")
-		.call(d3.axisLeft(y));
-
-	// Define a color scale
-	const color = d3.scaleOrdinal(d3.schemeCategory10);
-
-	// Create legend
-	const legend = svg.append("g")
-	    .attr("class", "legend-container")
-		.attr("transform", `translate(${width + margin.right - 200}, ${-30})`);
-
-	// Add background and border for legend
-	const legendWidth = 150;
-    const legendHeight = groupedData.length * 20 + 45; // Adjusted for margin
-
-	legend.append("rect")
-		.attr("width", legendWidth)
-		.attr("height", legendHeight)
-		.attr("class", "legend-bg");
-
-	// Add legend title
-	legend.append("text")
-		.attr("x", legendWidth / 2)
-		.attr("y", 20)
-		.attr("class", "legend-title")
-		.attr("text-anchor", "middle")
-		.text("Midwest States");
-
-	// Plot each state's data with a different color
-	groupedData.forEach((stateData, i) => {
-		const line = d3.line()
-			.x(d => x(d.date_updated))
-			.y(d => y(d.new_deaths));
-
-		svg.append("path")
-			.datum(stateData.values)
-			.attr("class", "line")
-			.attr("d", line)
-			.attr("stroke", color(i));
-
-//		// Add a random annotation for each state using modulo
-//		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
-//		const randomDataPoint = stateData.values[randomIndex];
-//
-//		const annotationX = x(randomDataPoint.date_updated) + 55;
-//		const annotationY = y(randomDataPoint.new_deaths) - 55;
-//
-//		svg.append("line")
-//			.attr("x1", x(randomDataPoint.date_updated))
-//			.attr("x2", annotationX)
-//			.attr("y1", y(randomDataPoint.new_deaths))
-//			.attr("y2", annotationY)
-//			.attr("stroke", color(i))
-//			.attr("stroke-dasharray", "2,2");
-//
-//		svg.append("text")
-//			.attr("x", annotationX + 5)  // Adding extra space for clarity
-//			.attr("y", annotationY)
-//			.attr("text-anchor", "start")
-//			.attr("class", "legend")
-//			.style("fill", color(i))
-//			.text(stateData.key);
-
-		// Legend
-		const legendRow = legend.append("g")
-			.attr("class", "legend-row")
-			.attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
-
-
-		legendRow.append("rect")
-			.attr("width", 10)
-			.attr("height", 10)
-			.attr("class", "legend-box")
-			.attr("fill", color(i));
-
-
-		legendRow.append("text")
-			.attr("x", 20)
-			.attr("y", 10)
-			.attr("class", "legend")
-			.text(stateData.key);
-	});
-
-	// Add axis labels
-	svg.append("text")
-	    .attr("class", "axis-label")
-		.attr("text-anchor", "end")
-		.attr("x", width / 2 + margin.left)
-		.attr("y", height + margin.top + 40)
-		.text("Date");
-
-	svg.append("text")
-	    .attr("class", "axis-label")
-		.attr("text-anchor", "end")
-		.attr("transform", "rotate(-90)")
-		.attr("y", -margin.left + 20)
-		.attr("x", -height / 3)
-		.text("New Deaths per Week");
-
-	});
-}
-
-async function createCasesWeeklyWestChart() {
-	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
-		width = document.body.clientWidth - margin.left - margin.right,
-		height = 425 - margin.top - margin.bottom;
-
-	const parseDate = d3.timeParse("%m/%d/%Y");
-
-	const x = d3.scaleTime().range([0, width]);
-	const y = d3.scaleLinear().range([height, 0]);
-
-	const svg = d3.select("#cases-chart-west").append("svg")
-		.attr("width", '90%')
-		.attr("height", '100%')
-		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
-		.attr("preserveAspectRatio", "xMidYMid meet")
-		.append("g")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-	initCovidRegionalData().then(data => {
-
-	// Filter data for the South region
-	const filteredData = data.filter(d => d.region === "West");
-
-	// Parse dates and convert new cases to numbers
-	filteredData.forEach(d => {
-		d.date_updated = parseDate(d.date_updated);
-		d.new_deaths = +d.new_deaths;
-	});
-
-	// Group data by state
-	const groupedData = d3.nest()
-		.key(d => d.state_full)
-		.entries(filteredData);
-
-	x.domain(d3.extent(filteredData, d => d.date_updated));
-	y.domain([0, d3.max(filteredData, d => d.new_deaths)]);
-
-	svg.append("g")
-		.attr("transform", "translate(0," + height + ")")
-		.call(d3.axisBottom(x));
-
-	svg.append("g")
-		.call(d3.axisLeft(y));
-
-	// Define a color scale
-	const color = d3.scaleOrdinal(d3.schemeCategory10);
-
-	// Create legend
-	const legend = svg.append("g")
-		.attr("class", "legend-container")
-		.attr("transform", `translate(${width + margin.right - 200}, ${-30})`);
-
-	// Add background and border for legend
-	const legendWidth = 150;
-    const legendHeight = groupedData.length * 20 + 45; // Adjusted for margin
-
-	legend.append("rect")
-		.attr("width", legendWidth)
-		.attr("height", legendHeight)
-		.attr("class", "legend-bg");
-
-	// Add legend title
-	legend.append("text")
-		.attr("x", legendWidth / 2)
-		.attr("y", 20)
-		.attr("class", "legend-title")
-		.attr("text-anchor", "middle")
-		.text("Western States");
-
-	// Plot each state's data with a different color
-	groupedData.forEach((stateData, i) => {
-		const line = d3.line()
-			.x(d => x(d.date_updated))
-			.y(d => y(d.new_deaths));
-
-		svg.append("path")
-			.datum(stateData.values)
-			.attr("class", "line")
-			.attr("d", line)
-			.attr("stroke", color(i));
-
-//		// Add a random annotation for each state using modulo
-//		const randomIndex = 10 + (i * 25) % (stateData.values.length - 10);
-//		const randomDataPoint = stateData.values[randomIndex];
-//
-//		const annotationX = x(randomDataPoint.date_updated) + 55;
-//		const annotationY = y(randomDataPoint.new_deaths) - 55;
-//
-//		svg.append("line")
-//			.attr("x1", x(randomDataPoint.date_updated))
-//			.attr("x2", annotationX)
-//			.attr("y1", y(randomDataPoint.new_deaths))
-//			.attr("y2", annotationY)
-//			.attr("stroke", color(i))
-//			.attr("stroke-dasharray", "2,2");
-//
-//		svg.append("text")
-//			.attr("x", annotationX + 5)  // Adding extra space for clarity
-//			.attr("y", annotationY)
-//			.attr("text-anchor", "start")
-//			.attr("class", "legend")
-//			.style("fill", color(i))
-//			.text(stateData.key);
-//
-		// Legend
-		const legendRow = legend.append("g")
-              .attr("transform", `translate(15, ${i * 20 + 40})`); // Adjusted for margin
-
-
-		legendRow.append("rect")
-			.attr("width", 10)
-			.attr("height", 10)
-			.attr("class", "legend-box")
-			.attr("fill", color(i));
-
-
-		legendRow.append("text")
-			.attr("x", 20)
-			.attr("y", 10)
-			.attr("class", "legend")
-			.text(stateData.key);
-	});
-
-	// Add axis labels
-	svg.append("text")
-	    .attr("class", "axis-label")
-		.attr("text-anchor", "end")
-		.attr("x", width / 2 + margin.left)
-		.attr("y", height + margin.top + 40)
-		.text("Date");
-
-	svg.append("text")
-	    .attr("class", "axis-label")
-		.attr("text-anchor", "end")
-		.attr("transform", "rotate(-90)")
-		.attr("y", -margin.left + 20)
-		.attr("x", -height / 3)
-		.text("New Deaths per Week");
-
-	});
-}
-
-*/
 
 function createDropdownOptions(data) {
 	const uniqueStates = [...new Set(data.map(d => d.state_full))];
