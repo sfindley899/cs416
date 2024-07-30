@@ -223,14 +223,19 @@
         }
 
 	   .annotation-line {
+		   z-index: 1000;
 		   stroke: black;
 		   stroke-dasharray: 4, 4;
 	   }
 
 	   .annotation-text {
+		   z-index: 1000;
 		   font-weight: bold;
 		   fill: black;
 	   }
+	   .annotation-text {
+		   z-index: 1000;
+		}
 
         .tooltip .tooltiptext {
             visibility: hidden;
@@ -285,7 +290,7 @@
 					<img src="golden_gate.jpg" alt="Golden Gate Bridge">
 				</div>
 			<h3>This number is approximately the amount of lives lost to COVID-19 from March 2020 to May 2023.</h3>
-			<h3>As of June 2024, over <strong>1,000,000</strong> lives have been lost to COVID-19.</h3>
+			<h3>As of June 2024, over <strong>1,193,827</strong> lives have been lost to COVID-19.</h3>
 			<h3>Let’s explore the data to understand this, starting with the cumulative deaths.</h3>
 		   </div>
 			<a href="#section2" class="nav-button">Section 2: Cumulative Deaths</a>
@@ -302,7 +307,7 @@
         <div id="section3" class="section section-3">
             <div class="content-block">
 				<h3>This chart illustrates the trends in weekly COVID-19 cases from April 2020 to April 2023.</h3>
-				<div id="cases-chart"></div>
+				<div class="chart" id="cases-chart"></div>
 				<script>loadCasesWeeklyD3Chart()</script>
                 <h3>Weekly trends in cases highlight critical periods and the effectiveness of public health measures, such as vaccines, mask mandates, and lockdowns.</h3>
 		   </div>
@@ -313,7 +318,7 @@
 				<h3>
 				However, despite the rollout of vaccines, there were still periods with significant spikes in weekly deaths.
 				</h3>
-				<div id="deaths-chart"></div>
+				<div class="chart" id="deaths-chart"></div>
 				<h3>
 				<script>loadDeathsWeeklyD3Chart()</script>
 				During the peak of the Omicron variant, from January 30 to February 5, 2022, over 18,400 deaths were recorded in just one week.
@@ -369,7 +374,7 @@
 					<div id="slider-container"></div>
 					<div id="slider"></div>
 				</div>
-				<div id="interactive-chart" class="region-chart"></div>
+				<div class="chart" id="interactive-chart" ></div>
 				<script>updateChartEntryFunc()</script>
             </div>
 			<a href="#section6" class="nav-button">Section 6: Conclusion</a>
