@@ -317,7 +317,6 @@ async function createCumulativeDeathsChart() {
 			console.log(parseDate(ann.date))
 			const dataPoint = data.find(d => formatDateString(d.date_value) === formatDateString(parseDate(ann.date)));
 			if (dataPoint) {
-			console.log("found data point")
 			const annotationX = x(parseDate(ann.date));
 			const annotationY = y(dataPoint["Cumulative Deaths"]) - 15;
 
@@ -373,38 +372,24 @@ async function createCasesWeeklyChart() {
 
      initCovidRegionalData().then(data => {
 		data.forEach(d => {
-			d.date_updated = parseDate(d.date_updated);
+			d.date_updated = parseDate(d.date_updated)			
 		});
-
-		const aggregatedSum = {};
-
-		// Iterate through the array to aggregate data by start_date
-		data.forEach(d => {
-			const startDate = d.start_date;
-			if (!aggregatedSum[startDate]) {
-				aggregatedSum[startDate] = 0; // Initialize if not already present
-			}
-			aggregatedSum[startDate] += d.abs_new_cases; // Sum abs_new_cases for each start_date
-			console.log(aggregatedSum[startDate])
-		});
-
 
 		// Aggregate data by date
 		const aggregatedData = d3.nest()
 			.key(d => d.start_date)
 			.rollup(v => ({
 				total_cases: d3.sum(v, d => +d.abs_new_cases),
-				first_date: v[0].start_date // Use the first start_date
+				first_date: v[0].start_date, // Use the first start_date
+				legend: v[0].legend, // Use the first start_date
 			}))
 			.entries(data)
 			.map(d => ({
 				date: new Date(d.key),
 				value: d.value.total_cases,
-				current_date: d.value.first_date // Include the first start_date
+				current_date: d.value.first_date, // Include the first start_date
+				legend: d.value.legend
 			}));
-
-
-		console.log(aggregatedData)
 
 		x.domain(d3.extent(aggregatedData, d => d.date));
 		y.domain([0, d3.max(aggregatedData, d => d.value)]);
@@ -438,9 +423,7 @@ async function createCasesWeeklyChart() {
 			.y0(height)
 			.y1(d => y(d.value));
 
-		const proximityThreshold = 50; // Adjust this value as needed
-
-		console.log(aggregatedData)
+		const proximityThreshold = 20; // Adjust this value as needed
 
 		svg.append("path")
 			.datum(aggregatedData)
@@ -478,7 +461,8 @@ async function createCasesWeeklyChart() {
 					  .attr("stroke", "black")
 					  .attr("stroke-dasharray", "4,4");
 
-				   // Add background rectangle
+					
+					// Add background rectangle
 				   const textGroup = svg.append("g")
 										.attr("class", "annotation-text-group");
 
@@ -501,7 +485,7 @@ async function createCasesWeeklyChart() {
 											.style("font-weight", "bold");
 
            textElement.selectAll("tspan")
-                      .data(["Date: " + dataPoint.current_date + "Weekly Cases: " + dataPoint.value])
+                      .data(["Date: " + dataPoint.legend, "Total Deaths: " + dataPoint.value])
                       .enter()
                       .append("tspan")
                       .attr("x", annotationValuesX - 50)
@@ -642,7 +626,7 @@ async function createDeathsWeeklyChart() {
 			.style("stroke-width", "2px");
 	});
 }
-
+/*
 async function createCasesWeeklyNortheastChart() {
 	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
 		width = document.body.clientWidth - margin.left - margin.right,
@@ -814,8 +798,6 @@ async function createCasesWeeklySouthChart() {
 	const margin = { top: 30, right: 30, bottom: 70, left: -30 },
 		width = document.body.clientWidth - chartMargin.left - chartMargin.right - 300,
 		height = 425 - margin.top - margin.bottom;
-
-	console.log(width);
 
 	const parseDate = d3.timeParse("%m/%d/%Y");
 
@@ -1239,6 +1221,8 @@ async function createCasesWeeklyWestChart() {
 	});
 }
 
+*/
+
 function createDropdownOptions(data) {
 	const uniqueStates = [...new Set(data.map(d => d.state_full))];
 	const select = d3.select("#state-select");
@@ -1276,8 +1260,6 @@ function updateRegionalChart(data, selectedStates, startDate, endDate) {
 		d.date_updated >= parseDate(startDate) &&
 		d.date_updated <= parseDate(endDate)
 	);
-
-	console.log('Filtered data:', filteredData); // Debug message
 
 	// Parse dates and convert new cases to numbers
 	filteredData.forEach(d => {
