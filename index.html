@@ -15,8 +15,31 @@
             overflow: hidden;
             font-family: Arial, sans-serif;
         }
-
+        .nav-button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #444;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
         .section {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+			min-width: 1267px;
+			min-height: 555px;
+            overflow-y: auto;
+            overflow-x: auto;
+            scroll-snap-align: start;
+        }
+
+        .section-title {
             height: 100vh;
             width: 100%;
             display: flex;
@@ -25,6 +48,18 @@
             flex-direction: column;
             scroll-snap-align: start;
         }
+
+
+        .section-0 { background-color: #5a5a5a; }
+        .section-1 { background-color: #6a6a6a; }
+        .section-2 { background-color: #7a7a7a; }
+        .section-3 { background-color: #8a8a8a; }
+        .section-4 { background-color: #9a9a9a; }
+        .section-5 { background-color: #aaaaaa; }
+        .section-6 { background-color: #bababa; }
+        .section-7 { background-color: #cacaca; }
+        .section-8 { background-color: #dadada; }
+        .section-9 { background-color: #eaeaea; }
 
         .controls {
             display: flex;
@@ -55,6 +90,26 @@
             font-size: 2.5em;
             color: #d3d3d3;
         }
+		h2 {
+			margin-top: 20px;
+			margin-bottom: 20px;
+			font-size: 1.35em; 
+			color: #d3d3d3;
+		}		
+
+		@media (max-width: 687px) {
+				.section {
+					height: 468px;
+				}
+        }
+
+		@media (max-height: 687px) {
+
+				.section {
+					height: 468px;
+				}
+			}
+        }
         h3 {
             margin-top: 20px;
             margin-bottom: 20px;
@@ -71,6 +126,17 @@
         .content-block {
             background-color: #3e3e3e;
             padding: 20px;
+            overflow-y: auto;
+            margin: 10px 0;
+            width: 80%;
+            border-radius: 8px;
+            color: #d3d3d3;
+			max-height: 85vh;
+			min-height: 65vh;
+        }
+        .content-block-title {
+            background-color: #3e3e3e;
+            padding: 20px;
             margin: 10px 0;
             width: 80%;
             border-radius: 8px;
@@ -80,11 +146,6 @@
 		strong {
 		    color: red;
 
-		}
-		#state-select {
-		}
-
-		#update-chart {
 		}
 		.region-chart {
 		    width: 100%;
@@ -105,15 +166,14 @@
 			display: flex;
 			flex-wrap: wrap;
 			overflow-y: auto;
-			max-height: 100px; /* Adjust this value as needed */
-			justify-content: flex-start; /* Align items to start (left) */
+			max-height: 100px;
+			justify-content: flex-start;
 		}
-
 		.legend-row {
 			display: flex;
 			align-items: center;
-			margin-right: 40px; /* Adjust spacing between columns */
-			flex-basis: calc(33% - 20px); /* Adjust width taking margin into account */
+			margin-right: 40px; 
+			flex-basis: calc(33% - 20px); 
 			box-sizing: border-box;
 			padding: 5px;
 		}
@@ -121,7 +181,7 @@
 		.legend-box {
 			width: 10px;
 			height: 10px;
-			margin-right: 5px; /* Adjust spacing between box and text */
+			margin-right: 5px;
 			stroke: black;
 			stroke-width: 1px;
 		}
@@ -182,7 +242,7 @@
             padding: 5px;
             position: absolute;
             z-index: 1;
-            bottom: 125%; /* Position the tooltip above the text */
+            bottom: 125%;
             left: 50%;
             margin-left: -60px;
             opacity: 0;
@@ -193,50 +253,62 @@
             visibility: visible;
             opacity: 1;
         }
+        #cases-chart, #deaths-chart, #interactive-chart, #total-deaths-chart {
+            min-width: 800px;
+			min-height: 200px;
+            overflow-x: auto;
+            overflow-y: auto;
+            height: 400px; 
+            margin: 0 auto; 
+        }
     </style>
 </head>
-<body">
+<body onload="navigateToFirstSection()">
+
+<script>
+    function navigateToFirstSection() {
+        window.location.hash = '#section0';
+    }
+</script>
     <div id="container">
-        <div class="section" style="background-color: #2e2e2e;">
+        <div  id="section0" class="section-title section-0">
+            <div class="content-block-title" style="text-align: center;">
             <h1>COVID-19’s Death Toll on the US</h1>
-            <div class="content-block">
-                <h3>
-					COVID-19 has devastated lives across America.
-				</h3>
-				<h3>
-					Although the US public emergency ended on May 11, 2023, this presentation explores its lasting impact within the country.
-				</h3>
-				<h3>Scroll down to explore the data and insights further.</h3>
+			<h2>Explore the impact of COVID-19 through our interactive visualization of case and death counts.</h2>
             </div>
+		<a href="#section1" class="nav-button">Section 1: Introduction</a>
         </div>
-        <div class="section" style="background-color: #3e3e3e;">
-            <div class="content-block">
-                <h3>Imagine <strong >800,000 people</strong>, the population with the city San Francisco suddenly disappearing.</h3>
+        <div id="section1" class="section section-1">
+            <div class="content-block" style="text-align: center;">
+				<u><h2>Imagine <strong>800,000 people</strong> — the population of San Francisco — suddenly disappearing.</u></h2>
 				<div class="image-container" class="center">
 					<img src="golden_gate.jpg" alt="Golden Gate Bridge">
 				</div>
-				<h3>This number is approximately the amount of lives lost to COVID-19 from March 2020 to May 2023.</h3>
-				<h3>As of June 2024, over <strong>1,000,000</strong> lives were lost to COVID-19.</h3>
-				<h3>Let’s explore the data to understand this, starting with the cumulative deaths.</h3>
+			<h2>This number is approximately the amount of lives lost to COVID-19 from March 2020 to May 2023.</h2>
+			<h2>As of June 2024, over <strong>1,000,000</strong> lives have been lost to COVID-19.</h2>
+			<h2>Let’s explore the data to understand this, starting with the cumulative deaths.</h2>
 		   </div>
+			<a href="#section2" class="nav-button">Section 2: Cumulative Deaths</a>
         </div>
-        <div class="section" style="background-color: #4e4e4e;">
+        <div id="section2" class="section section-2">
             <div class="content-block">
                 <h3>While the rate of COVID-19 deaths has slowed over time, the rising cumulative death count tells a different story.</h3>
 				<div class="chart" id="total-deaths-chart"></div>
 				<h3>The rising number of cases underscores the persistent spread of COVID-19, despite decreasing mortality rates over time.</h3>
 				<script>totalDeathsD3Chart()</script>
             </div>
+		<a href="#section3" class="nav-button">Section 3: Weekly Cases</a>
         </div>
-        <div class="section" style="background-color: #3e3e3e;">
+        <div id="section3" class="section section-3">
             <div class="content-block">
 				<h3>This chart illustrates the trends in weekly COVID-19 cases from April 2020 to April 2023.</h3>
 				<div id="cases-chart"></div>
 				<script>loadCasesWeeklyD3Chart()</script>
                 <h3>Weekly trends in cases highlight critical periods and the effectiveness of public health measures, such as vaccines, mask mandates, and lockdowns.</h3>
 		   </div>
+		<a href="#section4" class="nav-button">Section 4: Weekly Deaths</a>
         </div>
-        <div class="section" style="background-color: #5e5e5e;">
+        <div id="section4" class="section section-4">
             <div class="content-block">
 				<h3>
 				However, despite the rollout of vaccines, there were still periods with significant spikes in weekly deaths.
@@ -247,13 +319,10 @@
 				During the peak of the Omicron variant, from January 30 to February 5, 2022, over 18,400 deaths were recorded in just one week.
 				</h3>
 			</div>
+			<a href="#section5" class="nav-button">Section 5: Interactive Exploration</a>
         </div>
-        <div class="section" style="background-color: #6e6e6e;">
-            <div class="content-block">
-				<h1>Weekly Deaths and Cases by Region</h1>
-            </div>
-        </div>
-        <div class="section" style="background-color: #7e7e7e;">
+<!--
+        <div class="section section-" style="background-color: #7e7e7e;">
             <div class="content-block">
                 <h3>The Northeast faced significant challenges at various points during the pandemic, reflecting its high population density and initial outbreak.</h3>
 				<div id="cases-chart-northeast"></div>
@@ -261,33 +330,36 @@
 			
             </div>
         </div>
-        <div class="section" style="background-color: #8e8e8e;">
+        <div class="section section-" style="background-color: #8e8e8e;">
             <div class="content-block">
                 <h3>The South experienced varying impacts, with some states hit harder due to different public health responses and population factors.</h3>
 				<div id="cases-chart-south"></div>
 				<script>loadCasesWeeklySouthD3Chart()</script>
             </div>
         </div>
-        <div class="section" style="background-color: #8e8e8e;">
+        <div class="section section-" style="background-color: #8e8e8e;">
             <div class="content-block">
                 <h3>The Midwest saw significant surges in cases and deaths, especially during the later waves of the pandemic.</h3>
 				<div id="cases-chart-midwest"></div>
 				<script>loadCasesWeeklyMidwestD3Chart()</script>
             </div>
         </div>
-		<div class="section" style="background-color: #8e8e8e;">
+		<div class="section section-" style="background-color: #8e8e8e;">
             <div class="content-block">
                 <h3>The West faced severe impacts, with significant spikes in cases and deaths at various stages of the pandemic.</h3>
 				<div id="cases-chart-west"></div>
 				<script>loadCasesWeeklyWestD3Chart()</script>	
             </div>
         </div>
-        <div class="section" style="background-color: #6e6e6e;">
+-->
+<!--
+        <div id="section5" class="section section-" style="background-color: #6e6e6e;">
             <div class="content-block">
 				<h1>Interactive Exploration</h1>
             </div>
         </div>
-        <div class="section" style="background-color: #9e9e9e;">
+-->
+        <div id="section5"  class="section section-5">
             <div class="content-block">
                 <h3>Use this interactive slide to explore specific data points, trends, and regional impacts in more detail.</h3>
 				<div class="controls">
@@ -300,16 +372,24 @@
 				<div id="interactive-chart" class="region-chart"></div>
 				<script>updateChartEntryFunc()</script>
             </div>
-        </div>
-        <div class="section" style="background-color: #bebebe;">
-            <div class="content-block">
+			<a href="#section6" class="nav-button">Section 6: Conclusion</a>
+		</div>
+        <div id="section6" class="section-title section-6">
+            <div class="content-block-title">
                 <h3>Understanding the pandemic's impact through data is crucial for preventing future outbreaks and improving global health responses.</h3>
             </div>
+			<a href="#section7" class="nav-button">Section 7: References</a>
         </div>
-        <div class="section" style="background-color: #cecece;">
-            <div class="content-block">
+        <div id="section7" class="section-title section-7">
+            <div class="content-block-title">
                 <h1>References:</h1>
+					<ul>
+					  <li><a href="https://covid.cdc.gov/covid-data-tracker/#deaths-landing" style="color: white;">COVID-19 Deaths Landing</a></li>
+					  <li><a href="https://covid.cdc.gov/covid-data-tracker/#trends_weeklydeaths_select_00" style="color: white;">Weekly Death Trends</a></li>
+					  <li>Image source: <a href="https://commons.wikimedia.org/wiki/File:Golden_Gate_Bridge_.JPG" target="_blank" style="color: white;">Wikimedia Commons</a></li>
+					</ul>
             </div>
+			<a href="#section1" class="nav-button">Back to top</a>
         </div>
     </div>
 </body>
