@@ -266,6 +266,77 @@
             height: 400px; 
             margin: 0 auto; 
         }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #b3b3b3;
+            outline: none;
+            opacity: 0.9;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            cursor: pointer;
+        }
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            cursor: pointer;
+        }
+        .toggle-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #444;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        .toggle-button label {
+            margin: 0 10px;
+        }
+        .toggle-button input {
+            margin: 0 5px;
+        }
+		.flex-container {
+		  display: flex;
+		 justify-content: space-around;
+
+		  }
+        .slider-container {
+			background-color: #444;
+			border-radius: 5px;
+            padding: 5px;
+		}
+		.slide-box {
+			background-color: #444;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #444;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            padding: 5px;		
+		}
+        .slider {
+            width: 100%;
+            margin: 10px auto;
+        }
+        .date-labels {
+            display: flex;
+            color: #d3d3d3;
+        }
     </style>
 </head>
 <body onload="navigateToFirstSection()">
@@ -326,55 +397,35 @@
 			</div>
 			<a href="#section5" class="nav-button">Section 5: Interactive Exploration</a>
         </div>
-<!--
-        <div class="section section-" style="background-color: #7e7e7e;">
-            <div class="content-block">
-                <h3>The Northeast faced significant challenges at various points during the pandemic, reflecting its high population density and initial outbreak.</h3>
-				<div id="cases-chart-northeast"></div>
-				<script>loadCasesWeeklyNortheastD3Chart()</script>
-			
-            </div>
-        </div>
-        <div class="section section-" style="background-color: #8e8e8e;">
-            <div class="content-block">
-                <h3>The South experienced varying impacts, with some states hit harder due to different public health responses and population factors.</h3>
-				<div id="cases-chart-south"></div>
-				<script>loadCasesWeeklySouthD3Chart()</script>
-            </div>
-        </div>
-        <div class="section section-" style="background-color: #8e8e8e;">
-            <div class="content-block">
-                <h3>The Midwest saw significant surges in cases and deaths, especially during the later waves of the pandemic.</h3>
-				<div id="cases-chart-midwest"></div>
-				<script>loadCasesWeeklyMidwestD3Chart()</script>
-            </div>
-        </div>
-		<div class="section section-" style="background-color: #8e8e8e;">
-            <div class="content-block">
-                <h3>The West faced severe impacts, with significant spikes in cases and deaths at various stages of the pandemic.</h3>
-				<div id="cases-chart-west"></div>
-				<script>loadCasesWeeklyWestD3Chart()</script>	
-            </div>
-        </div>
--->
-<!--
-        <div id="section5" class="section section-" style="background-color: #6e6e6e;">
-            <div class="content-block">
-				<h1>Interactive Exploration</h1>
-            </div>
-        </div>
--->
         <div id="section5"  class="section section-5">
             <div class="content-block">
-                <h3>Use this interactive slide to explore specific data points, trends, and regional impacts in more detail.</h3>
-				<div class="controls">
-					<select id="state-select" multiple>
-						<!-- Options will be added dynamically -->
-					</select>
-					<div id="slider-container"></div>
-					<div id="slider"></div>
-				</div>
+                <h3>Use this interactive slide to explore specific data points, in more detail.</h3>
 				<div class="chart" id="interactive-chart" ></div>
+				<div class="flex-container">
+				    <div class="toggle-button">
+						<div class="date-labels">
+							<h3><u> Current Chart: </u></h3>
+						</div>
+						<label for="cases">Covid Cases</label>
+						<input type="radio" id="cases" name="toggle" checked>
+						<label for="deaths">Covid Deaths</label>
+						<input type="radio" id="deaths" name="toggle">
+					</div>
+					<div class="slide-box">
+							<div class="date-labels">
+							<h3><u> Date Range: </u></h3>
+						</div>
+					<div class="slider-container">
+					    <div class="date-labels">
+							<span id="startDateLabel">Start Date: </span><span id="Start Date Value"> - </span>
+						</div>
+						<input type="range" min="0" max="100" value="100" class="slider" id="dateSliderEnd">
+						<div class="date-labels">
+							<span id="endDateLabel">End Date: </span><span id="endDateValue"> - </span>
+						</div>
+					</div>
+					</div>
+				</div>
 				<script>updateChartEntryFunc()</script>
             </div>
 			<a href="#section6" class="nav-button">Section 6: Conclusion</a>
