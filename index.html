@@ -19,7 +19,7 @@
             display: block;
             margin: 10px 0;
             padding: 10px;
-            background-color: #444;
+            background-color: #31353E;
             color: white;
             text-align: center;
             text-decoration: none;
@@ -50,16 +50,16 @@
         }
 
 
-        .section-0 { background-color: #5a5a5a; }
-        .section-1 { background-color: #6a6a6a; }
-        .section-2 { background-color: #7a7a7a; }
-        .section-3 { background-color: #8a8a8a; }
-        .section-4 { background-color: #9a9a9a; }
-        .section-5 { background-color: #aaaaaa; }
-        .section-6 { background-color: #bababa; }
-        .section-7 { background-color: #cacaca; }
-        .section-8 { background-color: #dadada; }
-        .section-9 { background-color: #eaeaea; }
+        .section-0 { background-color: #F0EBC3; }
+        .section-1 { background-color: #F0EBC3; }
+        .section-2 { background-color: #F0EBC3; }
+        .section-3 { background-color: #F0EBC3; }
+        .section-4 { background-color: #F0EBC3; }
+        .section-5 { background-color: #F0EBC3; }
+        .section-6 { background-color: #F0EBC3; }
+        .section-7 { background-color: #F0EBC3; }
+        .section-8 { background-color: #F0EBC3; }
+        .section-9 { background-color: #F0EBC3; }
 
         .controls {
             display: flex;
@@ -88,13 +88,13 @@
             margin-top: 20px;
             margin-bottom: 20px;
             font-size: 2.5em;
-            color: #d3d3d3;
+            color: white;
         }
 		h2 {
 			margin-top: 20px;
 			margin-bottom: 20px;
 			font-size: 1.35em; 
-			color: #d3d3d3;
+			color: white;
 		}		
 
 		@media (max-width: 687px) {
@@ -114,7 +114,7 @@
             margin-top: 20px;
             margin-bottom: 20px;
             font-size: 1.25em;
-            color: #d3d3d3;
+            color: white;
         }
         ul {
             list-style-type: none;
@@ -124,23 +124,25 @@
             margin: 10px 0;
         }
         .content-block {
-            background-color: #3e3e3e;
+            background-color: #31353E;
             padding: 20px;
+		  -ms-overflow-style: none;  /* IE and Edge */
+		  scrollbar-width: none;  /* Firefox */
             overflow-y: auto;
             margin: 10px 0;
             width: 80%;
             border-radius: 8px;
-            color: #d3d3d3;
+            color: white;
 			max-height: 85vh;
 			min-height: 65vh;
         }
         .content-block-title {
-            background-color: #3e3e3e;
+            background-color: #31353E;
             padding: 20px;
             margin: 10px 0;
             width: 80%;
             border-radius: 8px;
-            color: #d3d3d3;
+            color: white;
 			max-height: 85vh;
         }
 		strong {
@@ -199,7 +201,7 @@
 		}
 
 		.area {
-			fill: steelblue;
+			fill: #C05241;
 		}
 
         .image-container img {
@@ -335,7 +337,7 @@
         .date-labels {
 			flex-direction: column;
             display: flex;
-            color: #d3d3d3;
+            color: white;
         }
         .slider-container {
             position: relative;
@@ -354,7 +356,7 @@
             width: 20px;
             height: 20px;
 			margin-top: -10px;
-            background: #0abab5;
+            background: steelblue;
             cursor: pointer;
             -webkit-appearance: none;
             appearance: none;
@@ -363,7 +365,7 @@
             pointer-events: all;
             width: 20px;
             height: 20px;
-            background: #0abab5;
+            background: steelblue;
             cursor: pointer;
         }
         .range-track {
@@ -372,7 +374,7 @@
 			max-width: 165px;
             height: 8px;
 			margin-right: 100px;
-            background: #0abab5;
+            background: steelblue;
         }
          input[type="range"] {
             -webkit-appearance: none;
@@ -392,7 +394,7 @@
 			z-index: 20;
             margin-top: -10px; /* Adjust this value to move the slider up */
 			opacity:1;
-            background: #0abab5;
+            background: steelblue;
             cursor: pointer;
             border-radius: 50%; /* This makes the thumb a circle */
         }
@@ -420,45 +422,45 @@
 					<img src="golden_gate.jpg" alt="Golden Gate Bridge">
 				</div>
 			<h3>This number is approximately the amount of lives lost to COVID-19 from March 2020 to May 2023.</h3>
-			<h3>As of June 2024, over <strong>1,193,827</strong> lives have been lost to COVID-19.</h3>
-			<h3>Let’s explore the data to understand this, starting with the cumulative deaths.</h3>
+			<h3>As of June 2024, over <strong><u>1,193,827</u></strong> lives have been lost to COVID-19.</h3>
+			<h3>Let’s explore the data to understand this, starting with the weekly cases.</h3>
 		   </div>
-			<a href="#section2" class="nav-button">Section 2: Cumulative Deaths</a>
+			<a href="#section2" class="nav-button">Section 2: Weekly Cases</a>
         </div>
         <div id="section2" class="section section-2">
-            <div class="content-block">
-                <h3>While the rate of COVID-19 deaths has slowed over time, the rising cumulative death count tells a different story.</h3>
-				<div class="chart" id="total-deaths-chart"></div>
-				<h3>The rising number of cases underscores the persistent spread of COVID-19, despite decreasing mortality rates over time.</h3>
-				<script>totalDeathsD3Chart()</script>
-            </div>
-		<a href="#section3" class="nav-button">Section 3: Weekly Cases</a>
-        </div>
-        <div id="section3" class="section section-3">
             <div class="content-block">
 				<h3>This chart illustrates the trends in weekly COVID-19 cases from April 2020 to April 2023.</h3>
 				<div class="chart" id="cases-chart"></div>
 				<script>loadCasesWeeklyD3Chart()</script>
-                <h3>Weekly trends in cases highlight critical periods and the effectiveness of public health measures, such as vaccines, mask mandates, and lockdowns.</h3>
-		   </div>
-		<a href="#section4" class="nav-button">Section 4: Weekly Deaths</a>
+                <h3>The weekly number of new COVID-19 cases shows the virus's spread and control over time.</h3>
+            </div>
+		<a href="#section3" class="nav-button">Section 3: Weekly Death Counts</a>
         </div>
-        <div id="section4" class="section section-4">
+        <div id="section3" class="section section-3">
             <div class="content-block">
 				<h3>
-				However, despite the rollout of vaccines, there were still periods with significant spikes in weekly deaths.
-				</h3>
+				Tracking the weekly death counts from COVID-19 reveal the immediate impact of the virus on mortality rates.
+					</h3>
 				<div class="chart" id="deaths-chart"></div>
 				<h3>
 				<script>loadDeathsWeeklyD3Chart()</script>
-				During the peak of the Omicron variant, from January 30 to February 5, 2022, over 18,400 deaths were recorded in just one week.
+					Weekly trends in cases highlight critical periods and the effectiveness of public health measures, such as vaccines, mask mandates, and lockdowns.
 				</h3>
+		   </div>
+		<a href="#section4" class="nav-button">Section 4: Cumulative Deaths</a>
+        </div>
+        <div id="section4" class="section section-4">
+            <div class="content-block">
+                <h3>Weekly death counts highlight the immediate impact of COVID-19 on mortality.</h3>
+				<div class="chart" id="total-deaths-chart"></div>
+				<h3>While the overall rate of COVID-19 deaths has slowed, the cumulative death toll continues to rise, reflecting the long-term impact of the pandemic.</h3>
+				<script>totalDeathsD3Chart()</script>
 			</div>
 			<a href="#section5" class="nav-button">Section 5: Interactive Exploration</a>
         </div>
         <div id="section5"  class="section section-5">
             <div class="content-block">
-                <h3>Use this interactive slide to explore specific data points, in more detail.</h3>
+                <h3>Now it's your turn. Use this interactive slide to explore specific data points in more detail between the weekly case and death counts.</h3>
 				<div class="chart" id="interactive-chart" ></div>
 				<div class="flex-container">
 				    <div class="toggle-button">
@@ -494,12 +496,6 @@
 			<a href="#section6" class="nav-button">Section 6: Conclusion</a>
 		</div>
         <div id="section6" class="section-title section-6">
-            <div class="content-block-title">
-                <h3>Understanding the pandemic's impact through data is crucial for preventing future outbreaks and improving global health responses.</h3>
-            </div>
-			<a href="#section7" class="nav-button">Section 7: References</a>
-        </div>
-        <div id="section7" class="section-title section-7">
             <div class="content-block-title">
                 <h1>References:</h1>
 					<ul>
