@@ -782,16 +782,58 @@ function updateRegionalChart(data, selectedChart, startDate, endDate) {
 
 }
 
+function initializeChart(data) {
+	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
+	width = document.body.clientWidth - margin.left - margin.right,
+	height = 425 - margin.top - margin.bottom;
+	
+    svg = d3.select("#interactive-chart").html("").append("svg")
+		.attr("width", '90%')
+		.attr("height", '100%')
+		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+		.attr("preserveAspectRatio", "xMidYMid meet")
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    x = d3.scaleTime().range([0, width]);
+    y = d3.scaleLinear().range([height, 0]);
+
+	const parseDate = d3.timeParse("%m/%d/%Y");
+	const formatDateString = date => d3.timeFormat("%Y-%m-%d")(date);
+
+    xAxis = d3.axisBottom(x);
+    yAxis = d3.axisLeft(y);
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .style("color", "#e0e0e0");
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .style("color", "#e0e0e0");
+
+    line = d3.line()
+        .x(d => x(d.date))
+        .y(d => y(d.value));
+
+    path = svg.append("path")
+        .attr("class", "line")
+        .style("stroke", "gold");
+}
+
 async function initializeRegionalChart(data) {
-		const margin = { top: 30, right: 70, bottom: 70, left: 70 },
-		width = document.body.clientWidth - margin.left - margin.right,
-		height = 425 - margin.top - margin.bottom;
+	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
+	width = document.body.clientWidth - margin.left - margin.right,
+	height = 425 - margin.top - margin.bottom;
 
 	const parseDate = d3.timeParse("%m/%d/%Y");
 
 	const x = d3.scaleTime().range([0, width]);
 	const y = d3.scaleLinear().range([height - 50, 0]);
 	const formatDateString = date => d3.timeFormat("%Y-%m-%d")(date);
+
+	d3.select("#interactive-chart").html("")
 
 	const svg = d3.select("#interactive-chart").append("svg")
 		.attr("width", '90%')
@@ -811,6 +853,7 @@ async function initializeRegionalChart(data) {
 		const aggregatedData = d3.nest()
 			.key(d => d.start_date)
 			.rollup(v => ({
+				total_cases: d3.sum(v, d => +d.abs_new_cases),
 				new_deaths: d3.sum(v, d => +d.new_deaths),
 				first_date: v[0].start_date, // Use the first start_date
 				legend: v[0].legend, // Use the first start_date
@@ -818,13 +861,15 @@ async function initializeRegionalChart(data) {
 			.entries(data)
 			.map(d => ({
 				date: new Date(d.key),
-				value: d.value.new_deaths,
+				deaths: d.value.new_deaths,
+				cases: d.value.total_cases,
 				current_date: d.value.first_date, // Include the first start_date
 				legend: d.value.legend
 			}));
 
+
 		x.domain(d3.extent(aggregatedData, d => d.date));
-		y.domain([0, d3.max(aggregatedData, d => d.value)]);
+		y.domain([0, d3.max(aggregatedData, d => d.cases)]);
 
 		svg.append("g")
 			.attr("transform", "translate(0," + height + ")")
@@ -853,7 +898,7 @@ async function initializeRegionalChart(data) {
 		const area = d3.area()
 			.x(d => x(d.date))
 			.y0(height)
-			.y1(d => y(d.value));
+			.y1(d => y(d.cases));
 
 		const proximityThreshold = 20; // Adjust this value as needed
 
@@ -868,7 +913,7 @@ async function initializeRegionalChart(data) {
 				   
 				   console.log(dp)
 				   const annotationValuesX = x( parseDate(dp.current_date));
-				   const annotationValuesY = y(dp.value);
+				   const annotationValuesY = y(dp.cases);
 					console.log(annotationValuesY)
 				   const distance = Math.abs(mouseX - annotationValuesX);
 				   return distance < proximityThreshold;
@@ -876,7 +921,7 @@ async function initializeRegionalChart(data) {
 
 			   if (dataPoint) {
 				   const annotationValuesX = x(parseDate(dataPoint.current_date));
-				   const annotationValuesY = y(dataPoint.value);
+				   const annotationValuesY = y(dataPoint.cases);
 
 				   // Remove existing annotations
 				   svg.selectAll(".annotation-line").remove();
@@ -917,7 +962,7 @@ async function initializeRegionalChart(data) {
 											.style("font-weight", "bold");
 
            textElement.selectAll("tspan")
-                      .data(["Date: " + dataPoint.legend, "Weekly Deaths: " + dataPoint.value])
+                      .data(["Date: " + dataPoint.legend, "Weekly Deaths: " + dataPoint.cases])
                       .enter()
                       .append("tspan")
                       .attr("x", annotationValuesX - 50)
@@ -935,7 +980,7 @@ async function initializeRegionalChart(data) {
 
 		const line = d3.line()
 			.x(d => x(d.date))
-			.y(d => y(d.value));
+			.y(d => y(d.cases));
 
 		svg.append("path")
 			.datum(aggregatedData)
@@ -946,20 +991,86 @@ async function initializeRegionalChart(data) {
 
 async function updateChartEntryFunc() {
 	const data = await initCovidRegionalData();
-	createDropdownOptions(data);
+	
+	
+	// get the data
+	// Change the span to include the start and end dates
+	
+	// create listener 0
+	
+
 
 	// Initialize the chart with the full dataset
 	initializeRegionalChart(data);
-
-	// Initialize the date range slider
-	const slider = initializeSlider(data);
-
-	d3.select("#interactive-chart").on("click", () => {
-		const selectedStates = Array.from(document.getElementById("state-select").selectedOptions).map(option => option.value);
-        const dateRange = slider.value();
-		updateRegionalChart(data, selectedStates, startDate, endDate);
-	});
 }
+
+async function main()
+{
+	const parseDate = d3.timeParse("%m/%d/%Y");
+     initCovidRegionalData().then(data => {
+		data.forEach(d => {
+			d.date_updated = parseDate(d.date_updated)			
+		});
+
+
+		// Aggregate data by date
+		const aggregatedData = d3.nest()
+			.key(d => d.start_date)
+			.rollup(v => ({
+				total_cases: d3.sum(v, d => +d.abs_new_cases),
+				new_deaths: d3.sum(v, d => +d.new_deaths),
+				first_date: v[0].start_date, // Use the first start_date
+				legend: v[0].legend, // Use the first start_date
+			}))
+			.entries(data)
+			.map(d => ({
+				date: new Date(d.key),
+				deaths: d.value.new_deaths,
+				cases: d.value.total_cases,
+				current_date: d.value.first_date, // Include the first start_date
+				legend: d.value.legend
+			}));			
+	 
+	 //	 console.log(aggregatedData)
+
+		// Make slider 		
+        var slider1 = document.getElementById('slider1');
+        var slider2 = document.getElementById('slider2');
+        var rangeTrack = document.getElementById('rangeTrack');
+        var startDate = document.getElementById('startDateValue');
+        var endDate = document.getElementById('endDateValue');
+
+        function updateSliderOutput() {
+            var minValue = Math.min(slider1.value, slider2.value);
+            var maxValue = Math.max(slider1.value, slider2.value);
+            // output.innerText = "Selected range: " + minValue + " - " + maxValue;
+			startDate.innerText = minValue;
+            endDate.innerText = maxValue;
+            rangeTrack.style.background = `linear-gradient(to right, #ddd ${minValue}%, #0abab5 ${minValue}%, #0abab5 ${maxValue}%, #ddd ${maxValue}%)`;
+        }
+
+        slider1.addEventListener('input', updateSliderOutput);
+        slider2.addEventListener('input', updateSliderOutput);
+		
+		console.log(d3.extent(aggregatedData, d => d.date))
+		 // Set min/max value of date		 
+// 		x.domain(d3.extent(aggregatedData, d => d.date));
+		// y.domain([0, d3.max(aggregatedData, d => d.value)]);
+
+		 
+		
+
+	 });	 
+}
+
+async function loadInteractiveD3DeathsChart() {
+	updateChartEntryFunc();
+}
+
+async function loadInteractiveD3CasesChart() {
+	updateChartEntryFunc();
+}
+
 
 async function loadInteractiveD3Chart() {
 }
