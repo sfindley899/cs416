@@ -822,27 +822,31 @@ function initializeChart(data) {
         .style("stroke", "gold");
 }
 
-async function initializeRegionalChart(data) {
-	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
-	width = document.body.clientWidth - margin.left - margin.right,
-	height = 425 - margin.top - margin.bottom;
+async function initializeRegionalChart(data, type, start_date, end_date) {
+	
+	// toggle between the axes/ labels depending on what is done.. 
+	chartLabels = {
+		"deaths" : {
+			"axis" : "New Deaths per Week",
+			"tool_tip":" Weekly Deaths: "
+		},
+		"cases": {
+			 "axis" : "New Cases per Week",
+		     "tool_tip":  " Weekly Cases: "
+		}
+	}
 
-	const parseDate = d3.timeParse("%m/%d/%Y");
 
-	const x = d3.scaleTime().range([0, width]);
-	const y = d3.scaleLinear().range([height - 50, 0]);
-	const formatDateString = date => d3.timeFormat("%Y-%m-%d")(date);
 
+	// clear contents
 	d3.select("#interactive-chart").html("")
+	
+	// clear contents
+	
+	// todo get axis built outside of the graph
+	// stop calling csv so many times
+	
 
-	const svg = d3.select("#interactive-chart").append("svg")
-		.attr("width", '90%')
-		.attr("height", '100%')
-		.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
-		.attr("preserveAspectRatio", "xMidYMid meet")
-		.append("g")
-		.attr("transform",
-			"translate(" + (margin.left + 30) + "," + margin.top + ")");
 
      initCovidRegionalData().then(data => {
 		data.forEach(d => {
@@ -870,30 +874,6 @@ async function initializeRegionalChart(data) {
 
 		x.domain(d3.extent(aggregatedData, d => d.date));
 		y.domain([0, d3.max(aggregatedData, d => d.cases)]);
-
-		svg.append("g")
-			.attr("transform", "translate(0," + height + ")")
-			.call(d3.axisBottom(x));
-
-		svg.append("g")
-			.call(d3.axisLeft(y));
-
-		// X Axis label
-		svg.append("text")
-		    .attr("class", "axis-label")
-			.attr("text-anchor", "end")
-			.attr("x", width / 2 + margin.left)
-			.attr("y", height + margin.top + 40)
-			.text("Date");
-
-		// Y Axis label
-		svg.append("text")
-		    .attr("class", "axis-label")
-			.attr("text-anchor", "end")
-			.attr("transform", "rotate(-90)")
-			.attr("y", -margin.left)
-			.attr("x", -height / 3)
-			.text("New Deaths per Week");
 
 		const area = d3.area()
 			.x(d => x(d.date))
@@ -989,6 +969,119 @@ async function initializeRegionalChart(data) {
 	});
 }
 
+async function plotData (svg, x, y, data, startDate, endDate, type) {
+	console.log(data)
+	console.log( "svg " + svg +  " y: " +  y  + " x: " +  x + " startDate : " +  startDate  + " endDate: " + endDate + " type " + type)   
+
+	// toggle between the axes/ labels depending on what is done.. 
+	chartLabels = {
+		"deaths" : {
+			"axis" : "New Deaths per Week",
+			"tool_tip":" Weekly Deaths: "
+		},
+		"cases": {
+			 "axis" : "New Cases per Week",
+		     "tool_tip":  " Weekly Cases: "
+		}
+	 }
+	console.log(chartLabels)
+	
+	//  Clear any lines or area plotted  
+	svg.selectAll(".line").remove()
+	svg.selectAll(".area").remove()
+	svg.selectAll(".axis-label").remove()
+	
+	const margin = { top: 30, right: 70, bottom: 70, left: 70 },
+	width = document.body.clientWidth - margin.left - margin.right,
+	height = 425 - margin.top - margin.bottom;
+
+	// Convert dates to timestamps for easier comparison
+	const s = new Date(startDate).getTime();
+	const e = new Date(endDate).getTime();
+
+	// Filter data based on the timestamp range
+	const filteredData = data.filter(d => {
+	  const dateTimestamp = new Date(d.current_date).getTime();
+	  return dateTimestamp >= s && dateTimestamp <= e;
+	});
+
+	console.log(filteredData)
+
+	// Set the x and y domain using the filtered data
+	x.domain(d3.extent(filteredData, d => d.date));
+	y.domain([0, d3.max(filteredData, d => d.value)]);
+
+	// X Axis label
+	svg.append("text")
+		.attr("class", "axis-label")
+		.attr("text-anchor", "end")
+		.attr("x", width / 2 + margin.left)
+		.attr("y", height + margin.top + 40)
+		.text("Date");
+
+	// Y Axis label
+	svg.append("text")
+		.attr("class", "axis-label")
+		.attr("text-anchor", "end")
+		.attr("transform", "rotate(-90)")
+		.attr("y", -margin.left)
+		.attr("x", -height / 3)
+		.text(chartLabels[type].axis);
+
+
+	svg.selectAll(".y-axis").remove()
+	svg.selectAll(".x-axis").remove()
+	// Redraw the x and y axis
+	svg.append("g")
+		.attr("transform", "translate(0," + height + ")")
+		.attr("class", "x-axis")
+		.call(d3.axisBottom(x));
+
+	svg.append("g")
+		.attr("class", "y-axis")
+		.call(d3.axisLeft(y));
+
+
+	const area = d3.area()
+		.x(d => x(d.date))
+		.y0(height)
+		.y1(d => y(d.value));
+
+	const line = d3.line()
+		.x(d => x(d.date))
+		.y(d => y(d.value));
+
+	// Append the path for the line once
+	svg.append("path")
+		.datum(filteredData)
+		.attr("class", "line")
+		.attr("d", line);
+
+	// If you need to append the area path as well
+	svg.append("path")
+		.datum(filteredData)
+		.attr("class", "area")
+		.attr("d", area)
+
+
+	// what's the domian 
+
+//	const area = d3.area()
+//		.x(d => x(d.date))
+//		.y0(height)
+//		.y1(d => y(d.value));
+//
+//	const line = d3.line()
+//			.x(d => x(d.date))
+//			.y(d => y(d.value));
+//
+		svg.append("path")
+			.datum(filteredData)
+			.attr("class", "line")
+			.attr("d", line);
+
+}
+
 async function updateChartEntryFunc() {
 	const data = await initCovidRegionalData();
 	
@@ -1001,74 +1094,154 @@ async function updateChartEntryFunc() {
 
 
 	// Initialize the chart with the full dataset
-	initializeRegionalChart(data);
+//	initializeRegionalChart(data);
 }
 
-async function main()
-{
-	const parseDate = d3.timeParse("%m/%d/%Y");
+async function main() {
+    const parseDate = d3.timeParse("%m/%d/%Y");
+    const formatDateString = date => d3.timeFormat("%Y-%m-%d")(date);
+
      initCovidRegionalData().then(data => {
+
 		data.forEach(d => {
-			d.date_updated = parseDate(d.date_updated)			
+			d.date_updated = parseDate(d.date_updated);
 		});
-
-
+	
 		// Aggregate data by date
 		const aggregatedData = d3.nest()
 			.key(d => d.start_date)
 			.rollup(v => ({
 				total_cases: d3.sum(v, d => +d.abs_new_cases),
 				new_deaths: d3.sum(v, d => +d.new_deaths),
-				first_date: v[0].start_date, // Use the first start_date
-				legend: v[0].legend, // Use the first start_date
+				first_date: v[0].start_date,
+				legend: v[0].legend,
 			}))
 			.entries(data)
 			.map(d => ({
 				date: new Date(d.key),
 				deaths: d.value.new_deaths,
 				cases: d.value.total_cases,
-				current_date: d.value.first_date, // Include the first start_date
-				legend: d.value.legend
-			}));			
-	 
-	 //	 console.log(aggregatedData)
-
-		// Make slider 		
-        var slider1 = document.getElementById('slider1');
-        var slider2 = document.getElementById('slider2');
-        var rangeTrack = document.getElementById('rangeTrack');
-        var startDate = document.getElementById('startDateValue');
-        var endDate = document.getElementById('endDateValue');
-
-        function updateSliderOutput() {
-            var minValue = Math.min(slider1.value, slider2.value);
-            var maxValue = Math.max(slider1.value, slider2.value);
-            // output.innerText = "Selected range: " + minValue + " - " + maxValue;
-			startDate.innerText = minValue;
-            endDate.innerText = maxValue;
-            rangeTrack.style.background = `linear-gradient(to right, #ddd ${minValue}%, #0abab5 ${minValue}%, #0abab5 ${maxValue}%, #ddd ${maxValue}%)`;
-        }
-
-        slider1.addEventListener('input', updateSliderOutput);
-        slider2.addEventListener('input', updateSliderOutput);
-		
-		console.log(d3.extent(aggregatedData, d => d.date))
-		 // Set min/max value of date		 
-// 		x.domain(d3.extent(aggregatedData, d => d.date));
-		// y.domain([0, d3.max(aggregatedData, d => d.value)]);
-
-		 
-		
-
-	 });	 
+				current_date: d.value.first_date,
+				legend: d.value.legend,
+			}));
+	
+		let keyStr = "cases";
+	
+		// Initialize elements
+		const slider1 = document.getElementById('slider1');
+		const slider2 = document.getElementById('slider2');
+		const rangeTrack = document.getElementById('rangeTrack');
+		const startDate = document.getElementById('startDateValue');
+		const endDate = document.getElementById('endDateValue');
+		const casesPath = document.getElementById('cases');
+		const deathsPath = document.getElementById('deaths');
+	
+		startDate.innerText = aggregatedData[0].current_date;
+		endDate.innerText = aggregatedData[aggregatedData.length - 1].current_date;
+	
+		function updateRadioCaseOutput(svg, x, y, aggregatedData) {
+			if (this.checked) {
+				keyStr = "cases";
+				console.log(keyStr);
+	
+				const transformedData = aggregatedData.map(d => ({
+					date: new Date(d.date),
+					value: d.cases,
+					current_date: d.current_date,
+					legend: d.legend,
+				}));
+				plotData(svg, x, y, transformedData, startDate.innerText, endDate.innerText, "cases");
+			}
+		}
+	
+		function updateRadioDeathOutput(svg, x, y, aggregatedData) {
+			if (this.checked) {
+				keyStr = "deaths";
+				console.log(keyStr);
+	
+				const transformedData = aggregatedData.map(d => ({
+					date: new Date(d.date),
+					value: d.deaths,
+					current_date: d.current_date,
+					legend: d.legend,
+				}));
+				plotData(svg, x, y, transformedData, startDate.innerText, endDate.innerText, "deaths");
+			}
+		}
+	
+		function updateSliderOutput(svg, x, y, aggregatedData) {
+			const minValue = Math.min(slider1.value, slider2.value);
+			const maxValue = Math.max(slider1.value, slider2.value);
+			endDate.innerText = aggregatedData[maxValue].current_date;
+			startDate.innerText = aggregatedData[minValue].current_date;
+			rangeTrack.style.background = `linear-gradient(to right, #ddd ${minValue}%, #0abab5 ${minValue}%, #0abab5 ${maxValue}%, #ddd ${maxValue}%)`;
+	
+			const transformedData = aggregatedData.map(d => ({
+				date: new Date(d.date),
+				value: keyStr === "deaths" ? d.deaths : d.cases,
+				current_date: d.current_date,
+				legend: d.legend,
+			}));
+			plotData(svg, x, y, transformedData, startDate.innerText, endDate.innerText, keyStr);
+		}
+	
+		const margin = { top: 30, right: 70, bottom: 70, left: 70 },
+			width = document.body.clientWidth - margin.left - margin.right,
+			height = 425 - margin.top - margin.bottom;
+	
+		const x = d3.scaleTime().range([0, width]);
+		const y = d3.scaleLinear().range([height - 50, 0]);
+	
+		const svg = d3.select("#interactive-chart").append("svg")
+			.attr("width", '90%')
+			.attr("height", '100%')
+			.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+			.attr("preserveAspectRatio", "xMidYMid meet")
+			.append("g")
+			.attr("transform", "translate(" + (margin.left + 30) + "," + margin.top + ")");
+	
+		// Set x domain
+		x.domain(d3.extent(aggregatedData, d => d.date));
+	
+		svg.append("g")
+			.attr("transform", "translate(0," + height + ")")
+			.attr("class", "x-axis")
+			.call(d3.axisBottom(x));
+	
+		svg.append("g")
+			.attr("class", "y-axis")
+			.call(d3.axisLeft(y));
+	
+		// X Axis label
+		svg.append("text")
+			.attr("class", "axis-label")
+			.attr("text-anchor", "end")
+			.attr("x", width / 2 + margin.left)
+			.attr("y", height + margin.top + 40)
+			.text("Date");
+	
+		// Y Axis label
+		svg.append("text")
+			.attr("class", "axis-label")
+			.attr("text-anchor", "end")
+			.attr("transform", "rotate(-90)")
+			.attr("y", -margin.left)
+			.attr("x", -height / 3);
+	
+		// Listeners
+		casesPath.addEventListener('change', function () { updateRadioCaseOutput.call(this, svg, x, y, aggregatedData); });
+		deathsPath.addEventListener('change', function () { updateRadioDeathOutput.call(this, svg, x, y, aggregatedData); });
+		slider1.addEventListener('input', function () { updateSliderOutput(svg, x, y, aggregatedData); });
+		slider2.addEventListener('input', function () { updateSliderOutput(svg, x, y, aggregatedData); });
+	});
 }
 
 async function loadInteractiveD3DeathsChart() {
-	updateChartEntryFunc();
+	// updateChartEntryFunc();
 }
 
 async function loadInteractiveD3CasesChart() {
-	updateChartEntryFunc();
+ //	updateChartEntryFunc();
 }
 
 

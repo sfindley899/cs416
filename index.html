@@ -369,7 +369,7 @@
         .range-track {
             position: absolute;
             width: 100%;
-			max-width: 170px;
+			max-width: 165px;
             height: 8px;
 			margin-right: 100px;
             background: #0abab5;
@@ -389,6 +389,7 @@
             -webkit-appearance: none;
             height: 23px;
             width: 23px;
+			z-index: 20;
             margin-top: -10px; /* Adjust this value to move the slider up */
 			opacity:1;
             background: #0abab5;
@@ -475,15 +476,15 @@
 						</div>
 					<div class="slider-container">
 					    <div class="date-labels">
-							<span id="startDateLabel">Start Date: </span><span id="startDateValue"> - </span>
+							<span id="startDateLabel"><u>Start Date:</u> </span><span id="startDateValue"> - </span>
 						</div>
 						<div style="margin-left: 125px; margin-right: 265px;">
-							<input type="range" min="0" max="100" value="0" id="slider1" class="slider">
-							<input type="range" min="0" max="100" value="100" id="slider2" class="slider">		
+							<input type="range" min="0" max="170" value="0" id="slider1" class="slider">
+							<input type="range" min="0" max="170" value="170" id="slider2" class="slider">		
 						<div class="range-track" id="rangeTrack"></div>
 						</div>							
 						<div class="date-labels">
-							<span id="endDateLabel">End Date: </span><span id="endDateValue"> - </span>
+							<span id="endDateLabel"><u>End Date: </u></span><span id="endDateValue"> - </span>
 						</div>
 					</div>
 					</div>
