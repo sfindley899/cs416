@@ -5,7 +5,7 @@ const total_death_annotations = [
     {
         date: "3/14/2020",
         count: null,
-        label: "March 2020:\nNational emergency declared",
+        label: "March 2020:\nOn March 13, 2020, the President of the US\ndeclared a national emergency in response to the\nCOVID-19 pandemic.",
     },
     //{ date: "4/3/2020", count: null, label: "April 2020:\nCDC recommends masks" },
     //{ date: "12/12/2020", count: null, label: "December 2020:\nFirst vaccine authorized" },
@@ -13,19 +13,19 @@ const total_death_annotations = [
     {
         date: "3/13/2021",
         count: null,
-        label: "March 2021:\nAmerican Rescue Plan signed",
+        label: "March 2021:\nOn March 11, 2021, the American Rescue Plan was\nsigned into law, providing $1.9 trillion in\neconomic relief, including funding for vaccines,\nschools, and stimulus payments to individuals.",
     },
     {
         date: "1/15/2022",
         count: null,
-        label: "February 2022:\nCDC updates mask guidance",
+        label: "February 2022:\nOn February 25, 2022, the CDC updated its mask\nguidelines to recommend masks based on\nCOVID-19 community levels rather than case count\nalone, considering factors like hospital capacity.",
     },
     //{ date: "7/24/2021", count: null, label: "July 2021:\nCDC updates mask guidance" },
     //{ date: "11/6/2021", count: null, label: "November 2021:\nVaccines for children approved" },
     {
         date: "5/13/2023",
         count: null,
-        label: "May 2023:\nPublic health emergency ends",
+        label: "May 2023:\nOn May 11, 2023, the federal COVID-19 public\nhealth emergency officially ended, transitioning\nthe pandemic response to more traditional public\nhealth measures.",
     },
 ];
 
@@ -33,7 +33,7 @@ const case_count_annotations = [
     {
         date: "1/23/2020",
         count: null,
-        label: "January 2020:\nFirst US COVID-19 case",
+        label: "January 2020:\nThe first confirmed case of COVID-19 in the US\nwas reported on January 21, 2020, in a man who\nhad returned from Wuhan, China\nthe outbreak's epicenter.",
     },
     //{ date: "2/1/2020", count: null, label: "January 2020:\nPublic health emergency declared" },
     //{ date: "3/14/2020", count: null, label: "March 2020:\nNational emergency declared" },
@@ -41,15 +41,15 @@ const case_count_annotations = [
     {
         date: "12/10/2020",
         count: null,
-        label: "December 2020:\nFirst vaccine authorized",
+        label: "December 2020:\nOn December 11, 2020, the FDA issued an\nEmergency Use Authorization for the Pfizer-\nBioNTech vaccine, the first COVID-19 vaccine\napproved in the US.",
     },
-    //{ date: "1/23/2021", count: null, label: "January 2021:\nNew administration's pandemic response" },
     //{ date: "3/13/2021", count: null, label: "March 2021:\nAmerican Rescue Plan signed" },
-    { date: "7/22/2021", count: null, label: "July 2021:\nCDC mask guidance" },
+    { date: "7/22/2021", count: null, label: "July 2021:\nThe CDC updated its mask guidelines to\nrecommend masks based on COVID\nlevels rather than case counts alone,\nconsidering factors like hospital capacity." },
+    //{ date: "1/23/2021", count: null, label: "January 2021:\nNew administration's pandemic response" },
     {
         date: "11/25/2021",
         count: null,
-        label: "November 2021:\nOmicron variant reported",
+        label: "November 2021:\nOmicron variant was reported to the WHO by\nSouth Africa on November 24, 2021, leading to\nglobal concerns due to its high number\nof mutations and increased transmissibility.",
     }, // Added Omicron introduction
     //{ date: "11/6/2021", count: null, label: "November 2021:\nVaccines for children approved" },
     // { date: "5/4/2023", count: null, label: "May 2023:\nPublic health emergency ends" }
@@ -61,25 +61,25 @@ const death_count_annotations = [
     {
         date: "3/19/2020",
         count: null,
-        label: "March 2020:\nNational emergency declared",
+        label: "March 2020:\nThe United States declared a national\nemergency to free up resources to combat the\nCOVID-19 outbreak.",
     },
     // { date: "4/23/2020", count: null, label: "April 2020:\nCDC recommends " },
     //  { date: "12/14/2020", count: null, label: "December 2020:\nFirst vaccine authorized" },
     {
         date: "9/3/2020",
         count: null,
-        label: "September 2020:\nAlpha variant identified",
+        label: "September 2020:\nThe Alpha variant, also known as B.1.1.7,\nwas first detected in the UK in September 2020,\nand was noted for its increased transmissibility.",
     },
     //  { date: "5/1/2021", count: null, label: "May 2021:\nBeta variant identified" },
     {
         date: "6/3/2021",
         count: null,
-        label: "June 2021:\nDelta variant identified",
+        label: "June 2021:\nThe Delta variant, identified in India in\nOctober 2020, became the dominant strain in\nthe US by June 2021, known for causing\nsevere illness.",
     },
     {
         date: "11/25/2021",
         count: null,
-        label: "November 2021:\nOmicron variant reported",
+        label: "November 2021:\nOmicron variant was reported to the WHO by\nSouth Africa on November 24, 2021, leading to\nglobal concerns due to its high number\nof mutations and increased transmissibility.",
     },
     //  { date: "5/4/2023", count: null, label: "May 2023:\nPublic health emergency ends" }
 ];
@@ -428,7 +428,7 @@ async function createCumulativeDeathsChart() {
 
                 svg.append("text")
                     .attr("x", annotationX + 10)
-                    .attr("y", annotationY - 15)
+                    .attr("y", annotationY - 25)
                     .attr("text-anchor", "start")
                     .attr("class", "annotation")
                     .attr("fill", "white")
@@ -641,8 +641,8 @@ async function createCasesWeeklyChart() {
                     .attr("opacity", 0.7);
 
                 svg.append("text")
-                    .attr("x", annotationX + 30)
-                    .attr("y", annotationY - 15)
+                    .attr("x", annotationX + 10)
+                    .attr("y", annotationY - 25)
                     .attr("text-anchor", "start")
                     .attr("class", "annotation")
                     .attr("fill", "white")
@@ -856,8 +856,8 @@ async function createDeathsWeeklyChart() {
                     .attr("opacity", 0.7);
 
                 svg.append("text")
-                    .attr("x", annotationX + 30)
-                    .attr("y", annotationY - 15)
+                    .attr("x", annotationX + 10)
+                    .attr("y", annotationY - 25)
                     .attr("text-anchor", "start")
                     .attr("class", "annotation")
                     .attr("fill", "white")
