@@ -1120,7 +1120,7 @@ async function main() {
             const maxValue = Math.max(slider1.value, slider2.value);
             endDate.innerText = aggregatedData[maxValue].current_date;
             startDate.innerText = aggregatedData[minValue].current_date;
-            rangeTrack.style.background = `linear-gradient(to right, #ddd ${minValue}%, #0abab5 ${minValue}%, #0abab5 ${maxValue}%, #ddd ${maxValue}%)`;
+            rangeTrack.style.background = `linear-gradient(to right, #ddd ${minValue*0.588}%, #0abab5 ${minValue*0.588}%, #0abab5 ${maxValue*0.588}%, #ddd ${maxValue*0.588}%)`;
 
             const transformedData = aggregatedData.map((d) => ({
                 date: new Date(d.date),

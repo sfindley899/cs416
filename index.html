@@ -280,7 +280,7 @@
             border-radius: 5px;
             background: #b3b3b3;
             outline: none;
-            opacity: 0.9;
+            opacity: 1;
             -webkit-transition: .2s;
             transition: opacity .2s;
         }
@@ -346,17 +346,18 @@
         .slider {
             position: absolute;
             pointer-events: none;
-			max-width: 170px;
+			max-width: 165px;
+			z-index: 10; /* Ensure slider input is above the track */
             width: 100%;
             height: 8px;
-            background: transparent;
         }
         .slider::-webkit-slider-thumb {
             pointer-events: all;
             width: 20px;
             height: 20px;
-			margin-top: -10px;
-            background: steelblue;
+			margin-top: -6px;
+            background: #0abab5;
+			z-index: 20;
             cursor: pointer;
             -webkit-appearance: none;
             appearance: none;
@@ -365,7 +366,7 @@
             pointer-events: all;
             width: 20px;
             height: 20px;
-            background: steelblue;
+            background: #0abab5;
             cursor: pointer;
         }
         .range-track {
@@ -373,16 +374,19 @@
             width: 100%;
 			max-width: 165px;
             height: 8px;
+			z-index: 5; /* Ensure track is below the slider input */
 			margin-right: 100px;
-            background: steelblue;
+            background: #0abab5;
         }
          input[type="range"] {
             -webkit-appearance: none;
             width: 100%;
+			max-width: 165px;
             background: none; /* This removes the background */
         }
         input[type="range"]::-webkit-slider-runnable-track {
             width: 100%;
+			max-width: 165px;
             height: 20px;
             cursor: pointer;
             background: none; /* This removes the track background */
@@ -390,11 +394,10 @@
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             height: 23px;
-            width: 23px;
+            width: 23.5px;
 			z-index: 20;
             margin-top: -10px; /* Adjust this value to move the slider up */
-			opacity:1;
-            background: steelblue;
+            background: #0abab5;
             cursor: pointer;
             border-radius: 50%; /* This makes the thumb a circle */
         }
@@ -478,15 +481,15 @@
 						</div>
 					<div class="slider-container">
 					    <div class="date-labels">
-							<span id="startDateLabel"><u>Start Date:</u> </span><span id="startDateValue"> - </span>
+							<span id="startDateLabel"><u><b>Start Date:</u></b></span><span id="startDateValue"> - </span>
 						</div>
-						<div style="margin-left: 125px; margin-right: 265px;">
+						<div style="margin-left: 125px; margin-right: 265px;  max-width: 170px;">
 							<input type="range" min="0" max="170" value="0" id="slider1" class="slider">
 							<input type="range" min="0" max="170" value="170" id="slider2" class="slider">		
 						<div class="range-track" id="rangeTrack"></div>
 						</div>							
 						<div class="date-labels">
-							<span id="endDateLabel"><u>End Date: </u></span><span id="endDateValue"> - </span>
+							<span id="endDateLabel"><b><u>End Date: </u></b></span><span id="endDateValue"> - </span>
 						</div>
 					</div>
 					</div>
